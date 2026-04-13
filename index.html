@@ -1102,9 +1102,23 @@
     }
   }
 
+  function clearAllSites() {
+    // Remove all site sub-tab buttons and content panels from the DOM
+    sites.forEach(s => {
+      document.getElementById(`stab-btn-${s.id}`)?.remove();
+      document.getElementById(`stab-site-${s.id}`)?.remove();
+    });
+    sites = [];
+    siteCounter = 0;
+    refreshSummaryTab();
+    updateComparison();
+    showSiteSubTab('summary');
+  }
+
   async function load() {
     if (!currentUser) return;
     try {
+      clearAllSites(); // always start fresh before loading
       const doc = await db.collection('toolkitData').doc(currentUser.uid).get();
       if (!doc.exists) return;
       const data = doc.data();
