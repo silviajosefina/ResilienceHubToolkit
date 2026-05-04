@@ -198,6 +198,24 @@
     .save-indicator { font-size: 0.75rem; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 5px; transition: opacity 0.4s; }
     .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
+    /* ── Inner tab segmented control (Intake / Walkthrough / Scoring) ── */
+    .inner-tabs-bar {
+      display: inline-flex; gap: 3px; background: #eef3f0; border-radius: 9px;
+      padding: 4px; margin-bottom: 22px;
+    }
+    .inner-tab-btn {
+      padding: 7px 18px; border: none; border-radius: 6px; cursor: pointer;
+      font-size: 0.82rem; font-weight: 500; color: var(--text-light);
+      background: transparent; transition: all 0.15s; white-space: nowrap;
+    }
+    .inner-tab-btn:hover { color: var(--primary); background: rgba(255,255,255,0.6); }
+    .inner-tab-btn.active {
+      background: white; color: var(--primary); font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    }
+    .inner-content { display: none; }
+    .inner-content.active { display: block; }
+
     /* ── Building Walkthrough ── */
     .wt-header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 4px; }
     .wt-field { padding: 12px 0; border-bottom: 1px solid #edf2ef; }
@@ -762,19 +780,40 @@
         </div>
       </div>
 
+      <div class="inner-tabs-bar">
+        <button class="inner-tab-btn active" id="itab-btn-${id}-intake"
+          onclick="showInnerTab(${id},'intake')">Site Intake</button>
+        <button class="inner-tab-btn" id="itab-btn-${id}-walkthrough"
+          onclick="showInnerTab(${id},'walkthrough')">Building Walkthrough</button>
+        <button class="inner-tab-btn" id="itab-btn-${id}-scoring"
+          onclick="showInnerTab(${id},'scoring')">Scoring</button>
+      </div>
+
+      <div class="inner-content active" id="itab-${id}-intake">
+        ${buildIntakeContent(id)}
+      </div>
+
+      <div class="inner-content" id="itab-${id}-walkthrough">
+        ${buildWalkthroughSection(id)}
+      </div>
+
+      <div class="inner-content" id="itab-${id}-scoring">
+        ${buildScoringContent(id)}
+      </div>
+    `;
+  }
+
+  function buildIntakeContent(id) {
+    return `
+      <div class="method-card" style="margin-bottom:0;">
+        ${buildIntakeForm(id)}
+      </div>
+    `;
+  }
+
+  function buildScoringContent(id) {
+    return `
       <details open>
-        <summary>Site Intake</summary>
-        <div class="section-body">${buildIntakeForm(id)}</div>
-      </details>
-
-      <details>
-        <summary>Building Walkthrough</summary>
-        <div class="wt-section-body">
-          ${buildWalkthroughSection(id)}
-        </div>
-      </details>
-
-      <details>
         <summary>Physical Resilience<span class="section-score" id="phys-score-${id}">— / 25</span></summary>
         <div class="section-body">
           <p class="section-desc">Evaluates the extent to which a building can withstand and continue operating during disruption. Early-stage feasibility screen only.</p>
@@ -1073,6 +1112,13 @@
     if (content) content.classList.add('active');
     const btn = document.getElementById(`tab-btn-${name}`);
     if (btn) btn.classList.add('active');
+  }
+
+  function showInnerTab(id, name) {
+    ['intake','walkthrough','scoring'].forEach(t => {
+      document.getElementById(`itab-${id}-${t}`)?.classList.toggle('active', t === name);
+      document.getElementById(`itab-btn-${id}-${t}`)?.classList.toggle('active', t === name);
+    });
   }
 
   function showSiteSubTab(name) {
