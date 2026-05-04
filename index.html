@@ -198,6 +198,48 @@
     .save-indicator { font-size: 0.75rem; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 5px; transition: opacity 0.4s; }
     .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
+    /* ── Building Walkthrough ── */
+    .wt-header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 4px; }
+    .wt-field { padding: 11px 0; border-bottom: 1px solid #edf2ef; }
+    .wt-field:last-child { border-bottom: none; }
+    .wt-field-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+    .wt-field-label { font-weight: 600; font-size: 0.875rem; color: var(--text); }
+    .wt-hint-details { display: inline-block; background: none; border: none; border-radius: 0; margin: 0; overflow: visible; }
+    .wt-hint-details > summary {
+      list-style: none; padding: 2px 9px; background: #e8f5ee; border: 1px solid #b8ddc8;
+      border-radius: 10px; font-size: 0.7rem; font-weight: 500; color: var(--primary-light);
+      cursor: pointer; user-select: none;
+    }
+    .wt-hint-details > summary::-webkit-details-marker { display: none; }
+    .wt-hint-details > summary::before { display: none; }
+    .wt-hint-details[open] > summary { background: #d1edd9; border-color: var(--accent); }
+    .wt-hint-body {
+      margin: 6px 0 4px; padding: 8px 12px; background: #f5f9f6;
+      border-radius: 6px; border: 1px solid var(--border);
+      font-size: 0.77rem; color: var(--text-light); line-height: 1.5;
+    }
+    .wt-hint-body ul { padding-left: 16px; margin: 0; }
+    .wt-hint-body li { margin-bottom: 2px; }
+    .wt-section-body { padding: 4px 18px 14px; }
+    .wt-task-item {
+      display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+      background: #f5f9f6; border-radius: 6px; margin-bottom: 6px;
+      font-size: 0.875rem; cursor: pointer; border: 1px solid transparent; transition: background 0.15s;
+    }
+    .wt-task-item input[type="checkbox"] { cursor: pointer; accent-color: var(--primary); width: 15px; height: 15px; flex-shrink: 0; }
+    .wt-task-item.done { color: var(--text-light); background: #eef5f0; text-decoration: line-through; }
+    .wt-download-bar {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+      padding: 13px 18px; background: #e8f5ee; border: 1px solid #b8ddc8; border-radius: 8px;
+    }
+    .wt-download-bar p { font-size: 0.84rem; color: var(--text); flex: 1; margin: 0; line-height: 1.5; }
+    .wt-picture-reminder {
+      display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+      background: #fff3cd; border: 1px solid #fcd34d; border-radius: 6px;
+      font-size: 0.78rem; font-weight: 600; color: #92400e; margin-bottom: 14px;
+    }
+    @media (max-width: 700px) { .wt-header-grid { grid-template-columns: 1fr; } }
+
     /* ── Auth overlays ── */
     .auth-overlay {
       position: fixed; inset: 0; z-index: 1000;
@@ -283,6 +325,7 @@
   <div class="tabs-bar" id="tabsBar">
     <button class="tab-btn active" id="tab-btn-home" onclick="showTab('home')">Overview</button>
     <button class="tab-btn" id="tab-btn-methodology" onclick="showTab('methodology')">Siting Methodology</button>
+    <button class="tab-btn" id="tab-btn-walkthrough" onclick="showTab('walkthrough')">Building Walkthrough</button>
     <button class="tab-btn" id="tab-btn-compare" onclick="showTab('compare')">Site Comparison</button>
   </div>
 
@@ -370,6 +413,11 @@
         </div>
       </details>
     </div>
+  </div>
+
+  <!-- ── WALKTHROUGH TAB ── -->
+  <div id="tab-walkthrough" class="tab-content">
+    <!-- Filled by buildWalkthroughHTML() on boot -->
   </div>
 
   <!-- ── COMPARE TAB ── -->
@@ -495,6 +543,124 @@
 
   let sites = [];
   let siteCounter = 0;
+
+  /* ── Walkthrough data ── */
+  const WALKTHROUGH_SECTIONS = [
+    { key: 'structure', label: 'Structure', fields: [
+      { key: 'constructionType', label: 'Construction / Building Type',
+        hints: ['Rate on 1–5 scale', 'Note framing type: balloon, platform, timber, etc.', 'Balloon framing may have fire code concerns', 'Document if multiple types are present'] },
+      { key: 'windows', label: 'Windows',
+        hints: ['Style and brand', 'Age', 'Average number of panes', 'Sealing condition (infiltration)', 'Performance rating (newer windows)', 'Framing material', 'Opening mechanism: casement, crank-out, sash'] },
+      { key: 'framing', label: 'Framing + Subframing',
+        hints: ['Spacing', 'Material', 'Signs of rot, woodworm, or termites', 'Drywall condition'] },
+      { key: 'insulation', label: 'Insulation',
+        hints: ['Type', 'R-Value', 'Thickness (inches)', 'Thermal imaging estimate (where and how much)', 'Can insulation be added?', 'Holes or voids — check for infiltration'] },
+      { key: 'atticCrawl', label: 'Attic + Crawl Space',
+        hints: ['Access point available?', 'Opening size (for equipment sizing)', 'Foundation type', 'Clearance: 18" crawlspace min, 24" attic min', 'Condition of attic/rafters', 'Are duct or wiring changes feasible?'] },
+      { key: 'asbestos', label: 'Asbestos',
+        hints: ['Present?', 'How much?', 'Condition', 'Cast-like appearance on ducts is a common sign'] },
+      { key: 'lead', label: 'Lead',
+        hints: ['Use testing kits', 'Building age is a key risk indicator', 'Take samples if suspected'] },
+      { key: 'roof', label: 'Roof',
+        hints: ['Style', 'Damage: leaks, broken tiles', 'Age and any remodels', 'Insulation', 'Size and structural suitability for solar', 'Materials and quality', 'Take pictures'] },
+      { key: 'sqft', label: 'Square Footage',
+        hints: ['Verify via PropertyShark', 'Or use floor plan', 'Or Cubi Casa app', 'Ensure accuracy before recording'] },
+      { key: 'importanceFactor', label: 'Importance Factor (Structural Integrity)',
+        hints: ['1.0 = Homes', '1.25 = Schools / Publicly owned buildings', '1.5 = Hospitals / Fire stations', 'Check cover sheet of structural drawings if available', 'Note Hayward Score if available', 'Is bracing necessary?'] },
+      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
+    ]},
+    { key: 'electrical', label: 'Electrical', fields: [
+      { key: 'panel', label: 'Electrical Panel',
+        hints: ['Take photos', 'Panel type: fuse vs. breaker', 'Panel capacity (100A?)', 'Up to code?', 'Breakers: open slots, sizes (quads/doubles/singles), count', 'Clearance to main gas/water lines (3 ft minimum)', 'Wiring type: knob-and-tube or other', 'Wire gauge', 'Main line connection type', 'Service line: underground or overhead', 'Electricity provider', 'Transformer capacity (contact provider)'] },
+      { key: 'voltageCurrent', label: 'Voltage & Current',
+        hints: ['240V available?', 'Upgrade required? (get transformer info)', 'Potential to upgrade to 200A?'] },
+      { key: 'largeAppliances', label: 'Large Appliances',
+        hints: ['List all: water heating, space heating, cooking equipment, lighting type', 'Note inputs and outputs', 'What needs to be added for retrofit?', 'Test load from appliances without a nameplate'] },
+      { key: 'loadCalc', label: 'Load Calculation',
+        hints: ['Use NEC 220.83 or 220.87 — choose whichever avoids panel upgrade', 'Compare to reference calculations', 'Test load from unlabeled appliances'] },
+      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
+    ]},
+    { key: 'healthRisks', label: 'Health Risks', fields: [
+      { key: 'asbestos', label: 'Asbestos',
+        hints: ['Present?', 'How much?', 'Condition', 'Look for cast-like appearance on ducts'] },
+      { key: 'lead', label: 'Lead',
+        hints: ['Use testing kits', 'Building age is a risk indicator', 'Take samples if suspected'] },
+      { key: 'gasAppliances', label: 'Gas Appliances',
+        hints: ['Type and location', 'Spray and check for gas leaks', 'Proper outdoor ventilation?', 'Piping condition: decomposing or deteriorated?'] },
+      { key: 'carbonMonoxide', label: 'Carbon Monoxide Detectors',
+        hints: ['One on every floor?', 'One in all sleeping areas?', 'One near combustion appliances?'] },
+      { key: 'smokeAlarms', label: 'Smoke Alarms',
+        hints: ['One on every floor?', 'In kitchens, rooms, hallways, bathrooms, stairways', 'Other fire hazard areas covered?'] },
+      { key: 'fireExits', label: 'Fire Exits & Sprinklers',
+        hints: ['Number of exits?', 'Exit signs visible at night?', 'Number of sprinklers present?', 'Date of most recent sprinkler inspection?'] },
+      { key: 'mold', label: 'Mold',
+        hints: ['Visible mold or water damage?', 'Color of mold', 'Deteriorated material (water rot) present?'] },
+      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
+    ]},
+    { key: 'plumbing', label: 'Plumbing', fields: [
+      { key: 'waterHeating', label: 'Water Heating System',
+        hints: ['Gas or electric?', 'Supply lines condition', 'Heater stand, stability, pan, drainage', 'Proper ventilation?', 'Location — can it be relocated?'] },
+      { key: 'leaksPipes', label: 'Leaks / Pipe Problems',
+        hints: ['Corrosion visible?', 'Gallons per minute', 'Flow rate at each faucet'] },
+      { key: 'showers', label: 'Showers & Water Fixtures',
+        hints: ['Number of showers', 'Space to add more if needed?', 'Number of faucets', 'Dishwasher and other water-using appliances'] },
+      { key: 'laundry', label: 'Laundry',
+        hints: ['Washer present?', 'Dryer present? Gas or electric?'] },
+      { key: 'tapWater', label: 'Tap Water Quality',
+        hints: ['Water filter present?', 'Access during emergencies?', 'Water storage capacity?'] },
+      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
+    ]},
+    { key: 'hvac', label: 'HVAC', fields: [
+      { key: 'heatCoolSystem', label: 'Heating & Cooling System',
+        hints: ['Age of system', 'Functionality per current users', 'Cooling capacity', 'BTU per square foot', 'Type: heat pump or other?'] },
+      { key: 'maxDuration', label: 'Max Duration at Full Capacity',
+        hints: ['Can it run 8+ hours continuously?', 'At what point will it fail or trip?'] },
+      { key: 'ducts', label: 'Ducts',
+        hints: ['Ground or ceiling mounted?', 'Air filter condition?', 'Ductless system?', 'Asbestos in ducts?', 'Insulation, taping, sealing quality', 'Efficiency'] },
+      { key: 'efficiency', label: 'Efficiency / Coefficient of Performance',
+        hints: ['Find spec plate on HVAC unit', 'Take photos of specifications'] },
+      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
+    ]},
+    { key: 'accessibility', label: 'Accessibility', fields: [
+      { key: 'tenants', label: 'Current Tenants / Occupancy',
+        hints: ['Do people currently use the space?', 'Do they feel comfortable there?'] },
+      { key: 'ada', label: 'ADA Compliance',
+        hints: ['Staircases: condition and alternatives?', 'Ramps present?', 'Handicap parking available?'] },
+      { key: 'parking', label: 'Parking',
+        hints: ['Where is parking located?', 'Capacity?'] },
+      { key: 'buildingCapacity', label: 'Building Capacity',
+        hints: ['Capacity posted anywhere?', 'Fire marshal assessment available?', 'Large open space for sheltering or sleeping?'] },
+      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
+    ]},
+    { key: 'facilities', label: 'Facilities', fields: [
+      { key: 'health', label: 'Health Equipment',
+        hints: ['First aid kit?', 'AED (defibrillator)?', 'Freezer/refrigerator — capacity?', 'Ice storage?'] },
+      { key: 'kitchen', label: 'Kitchen',
+        hints: ['Refrigeration capacity', 'Industrial cooking appliances?', 'Food storage space', 'Cooktop type'] },
+      { key: 'restrooms', label: 'Restrooms',
+        hints: ['Number of bathrooms', 'Gender-neutral options?', 'Shower space?', 'Number of toilets, urinals, sinks'] },
+      { key: 'overnightShelter', label: 'Overnight Shelter',
+        hints: ['Sleeping supplies available?', 'Open space to sleep?'] },
+      { key: 'childCare', label: 'Child Care',
+        hints: ['Playground?', 'Dedicated play space?'] },
+      { key: 'petCare', label: 'Pet Care',
+        hints: ['Outdoor space for pets?', 'Pet shelter available?'] },
+      { key: 'recreation', label: 'Recreation',
+        hints: ['Pool table?', 'Ping pong?', 'Chess board?', 'Basketball hoop?'] },
+      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
+    ]},
+  ];
+
+  const WALKTHROUGH_TASKS = [
+    { key: 'floorPlan',       label: 'Floor plan with Cubi Casa (to verify square footage)' },
+    { key: 'photographs',     label: 'Photograph significant findings (especially electrical panel)' },
+    { key: 'utilityBills',    label: 'Get a winter and summer utility bill from property managers' },
+    { key: 'officeSpace',     label: 'Document office space and square footage' },
+    { key: 'freeStorage',     label: 'Identify free storage space' },
+    { key: 'communications',  label: 'Check fax machine and communications infrastructure' },
+  ];
+
+  let walkthroughData = {};
 
   /* ═══════════════════════════════════════════════════
      SITE MANAGEMENT
@@ -1087,6 +1253,7 @@
       const data = {
         siteCounter,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        walkthroughData,
         sites: sites.map(s => ({
           id: s.id, slot: s.slot, name: s.name,
           intake:   s.intake,
@@ -1123,6 +1290,7 @@
       if (!doc.exists) return;
       const data = doc.data();
       siteCounter = data.siteCounter || 0;
+      restoreWalkthrough(data.walkthroughData || {});
       (data.sites || []).forEach(restoreSite);
     } catch(e) {
       console.warn('Firestore load failed', e);
@@ -1332,6 +1500,142 @@
   }
 
   /* ═══════════════════════════════════════════════════
+     BUILDING WALKTHROUGH
+  ═══════════════════════════════════════════════════ */
+  function setWT(section, field, value) {
+    if (!walkthroughData[section]) walkthroughData[section] = {};
+    walkthroughData[section][field] = value;
+    save();
+  }
+
+  function setWTTask(key, checked) {
+    if (!walkthroughData.tasks) walkthroughData.tasks = {};
+    walkthroughData.tasks[key] = checked;
+    const item = document.getElementById(`wt-task-item-${key}`);
+    if (item) item.classList.toggle('done', checked);
+    save();
+  }
+
+  function buildWalkthroughHTML() {
+    const container = document.getElementById('tab-walkthrough');
+    if (!container) return;
+    container.innerHTML = `
+      <div class="wt-download-bar no-print">
+        <p>Fill out this template during your site walkthrough — notes save automatically to the cloud. Download the original PDF to bring on-site.</p>
+        <a href="building-walkthrough-template.pdf" download
+           class="btn btn-primary" style="background:var(--primary);color:white;text-decoration:none;flex-shrink:0;">&#8595; Download PDF</a>
+      </div>
+
+      <div class="method-card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <div>
+            <div style="font-size:1rem;font-weight:700;color:var(--primary);">Building Walkthrough Template</div>
+            <div style="font-size:0.78rem;color:var(--text-light);margin-top:2px;">North Fair Oaks Resilience Hub — to be refined</div>
+          </div>
+          <div class="wt-picture-reminder">📸 Remember to take pictures throughout</div>
+        </div>
+        <div class="wt-header-grid">
+          <div class="form-group">
+            <label class="field-label">Building Name &amp; Address</label>
+            <input type="text" id="wt-header-buildingName" placeholder="e.g. Eastside Community Center, 123 Main St"
+              oninput="setWT('header','buildingName',this.value)" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Assessor Name</label>
+            <input type="text" id="wt-header-assessorName" placeholder="Your name"
+              oninput="setWT('header','assessorName',this.value)" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">Date / Time</label>
+            <input type="text" id="wt-header-dateTime" placeholder="e.g. May 4, 2026 — 10:00 AM"
+              oninput="setWT('header','dateTime',this.value)" />
+          </div>
+          <div class="form-group">
+            <label class="field-label">People Present</label>
+            <input type="text" id="wt-header-peoplePresent" placeholder="Names of team members on-site"
+              oninput="setWT('header','peoplePresent',this.value)" />
+          </div>
+        </div>
+      </div>
+
+      ${WALKTHROUGH_SECTIONS.map(sec => `
+        <details>
+          <summary>${esc(sec.label)}</summary>
+          <div class="wt-section-body">
+            ${sec.fields.map(f => `
+              <div class="wt-field">
+                <div class="wt-field-header">
+                  <span class="wt-field-label">${esc(f.label)}</span>
+                  ${f.hints.length ? `
+                    <details class="wt-hint-details">
+                      <summary class="wt-hint-toggle">What to look for ▾</summary>
+                      <div class="wt-hint-body">
+                        <ul>${f.hints.map(h => `<li>${esc(h)}</li>`).join('')}</ul>
+                      </div>
+                    </details>
+                  ` : ''}
+                </div>
+                <textarea id="wt-${sec.key}-${f.key}" rows="2"
+                  placeholder="${f.key === 'standoutNotes' ? 'Key observations from this section...' : 'Observations and notes...'}"
+                  oninput="setWT('${sec.key}','${f.key}',this.value)"></textarea>
+              </div>
+            `).join('')}
+          </div>
+        </details>
+      `).join('')}
+
+      <details>
+        <summary>Tasks Checklist</summary>
+        <div class="wt-section-body">
+          <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:12px;">Key tasks to complete during or after the walkthrough.</p>
+          <ul style="list-style:none;padding:0;">
+            ${WALKTHROUGH_TASKS.map(t => `
+              <li class="wt-task-item" id="wt-task-item-${t.key}">
+                <input type="checkbox" id="wt-task-cb-${t.key}" onchange="setWTTask('${t.key}',this.checked)" />
+                ${esc(t.label)}
+              </li>
+            `).join('')}
+          </ul>
+          <div class="form-group" style="margin-top:12px;">
+            <label class="field-label">Additional Notes</label>
+            <textarea id="wt-tasks-notes" rows="2" placeholder="Other tasks, observations, or follow-up items..."
+              oninput="setWT('tasks','notes',this.value)"></textarea>
+          </div>
+        </div>
+      </details>
+    `;
+  }
+
+  function restoreWalkthrough(data) {
+    if (!data) return;
+    walkthroughData = data;
+    // Header fields
+    ['buildingName','assessorName','dateTime','peoplePresent'].forEach(f => {
+      const el = document.getElementById(`wt-header-${f}`);
+      if (el && data.header?.[f] != null) el.value = data.header[f];
+    });
+    // Section textareas
+    WALKTHROUGH_SECTIONS.forEach(sec => {
+      sec.fields.forEach(field => {
+        const el = document.getElementById(`wt-${sec.key}-${field.key}`);
+        if (el && data[sec.key]?.[field.key] != null) el.value = data[sec.key][field.key];
+      });
+    });
+    // Tasks checkboxes
+    WALKTHROUGH_TASKS.forEach(task => {
+      const cb   = document.getElementById(`wt-task-cb-${task.key}`);
+      const item = document.getElementById(`wt-task-item-${task.key}`);
+      if (data.tasks?.[task.key]) {
+        if (cb)   cb.checked = true;
+        if (item) item.classList.add('done');
+      }
+    });
+    // Task notes
+    const notesEl = document.getElementById('wt-tasks-notes');
+    if (notesEl && data.tasks?.notes) notesEl.value = data.tasks.notes;
+  }
+
+  /* ═══════════════════════════════════════════════════
      UTILITY
   ═══════════════════════════════════════════════════ */
   function getSite(id) { return sites.find(s => s.id === id) || null; }
@@ -1339,7 +1643,8 @@
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  /* ── Boot: auth observer in Firebase Init section handles loading ── */
+  /* ── Boot ── */
+  buildWalkthroughHTML(); // render the walkthrough form (data filled in after auth)
 </script>
 </body>
 </html>
