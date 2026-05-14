@@ -99,6 +99,26 @@
     .flag-item:hover { border-color: var(--border); }
     .flag-item input[type="checkbox"] { cursor: pointer; accent-color: var(--primary); }
 
+    /* ── Intake form section headers & helpers ── */
+    .form-section-header {
+      grid-column: 1 / -1; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--primary);
+      padding: 18px 0 7px; border-bottom: 2px solid var(--border); margin-top: 4px;
+    }
+    .form-section-header:first-child { padding-top: 4px; }
+    .field-hint { font-size: 0.74rem; color: var(--text-light); margin-top: 5px; line-height: 1.55; }
+    .resources-card { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .resource-item {
+      display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px;
+      background: #f5f9f6; border: 1px solid var(--border); border-radius: 6px;
+      font-size: 0.82rem; font-weight: 500; color: var(--text); text-decoration: none;
+    }
+    a.resource-item:hover { border-color: var(--accent); background: #eef5f0; }
+    .resource-badge { font-size: 0.68rem; padding: 1px 7px; border-radius: 8px; font-weight: 600; }
+    .resource-badge.free    { background: #dcfce7; color: #14532d; }
+    .resource-badge.paid    { background: #fee2e2; color: #991b1b; }
+    .resource-badge.unknown { background: #f1f5f9; color: #64748b; }
+
     /* ── Scoring table ── */
     .scoring-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     .scoring-table th { text-align: left; padding: 8px 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); background: #f0f5f2; border-bottom: 1px solid var(--border); }
@@ -804,11 +824,7 @@
   }
 
   function buildIntakeContent(id) {
-    return `
-      <div class="method-card" style="margin-bottom:0;">
-        ${buildIntakeForm(id)}
-      </div>
-    `;
+    return buildIntakeForm(id);
   }
 
   function buildScoringContent(id) {
@@ -878,39 +894,183 @@
   function buildIntakeForm(id) {
     return `
       <div class="form-grid">
+
+        <!-- ── BASIC INFORMATION ── -->
+        <div class="form-section-header">Basic Information</div>
         <div class="form-group">
           <label class="field-label">Site Name / Nickname</label>
-          <input type="text" id="if-${id}-siteName" placeholder="e.g. Eastside Community Center" oninput="setIntake(${id},'siteName',this.value)" />
+          <input type="text" id="if-${id}-siteName" placeholder="e.g. Eastside Community Center"
+            oninput="setIntake(${id},'siteName',this.value)" />
         </div>
         <div class="form-group">
           <label class="field-label">Address</label>
-          <input type="text" id="if-${id}-address" placeholder="Street address" oninput="setIntake(${id},'address',this.value)" />
+          <input type="text" id="if-${id}-address" placeholder="Street address"
+            oninput="setIntake(${id},'address',this.value)" />
         </div>
         <div class="form-group">
           <label class="field-label">Current Use</label>
-          <input type="text" id="if-${id}-currentUse" placeholder="e.g. Community center, school, church" oninput="setIntake(${id},'currentUse',this.value)" />
+          <input type="text" id="if-${id}-currentUse" placeholder="e.g. Community center, school, church"
+            oninput="setIntake(${id},'currentUse',this.value)" />
         </div>
         <div class="form-group">
           <label class="field-label">Ownership / Manager</label>
-          <input type="text" id="if-${id}-owner" placeholder="Owner or property manager" oninput="setIntake(${id},'owner',this.value)" />
+          <input type="text" id="if-${id}-owner" placeholder="Owner or property manager"
+            oninput="setIntake(${id},'owner',this.value)" />
         </div>
         <div class="form-group">
-          <label class="field-label">Approx. Square Footage</label>
-          <input type="text" id="if-${id}-sqft" placeholder="e.g. 5,000 sq ft" oninput="setIntake(${id},'sqft',this.value)" />
+          <label class="field-label">Contact Name &amp; Title</label>
+          <input type="text" id="if-${id}-contactName" placeholder="e.g. Maria Lopez, Site Director"
+            oninput="setIntake(${id},'contactName',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Contact Email</label>
+          <input type="text" id="if-${id}-contactEmail" placeholder="email@example.com"
+            oninput="setIntake(${id},'contactEmail',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Hours of Operation</label>
+          <input type="text" id="if-${id}-hoursOfOperation" placeholder="e.g. Mon–Fri 9am–5pm"
+            oninput="setIntake(${id},'hoursOfOperation',this.value)" />
+        </div>
+
+        <!-- ── LAND SPECIFICATIONS ── -->
+        <div class="form-section-header">Land Specifications</div>
+        <div class="form-group">
+          <label class="field-label">Plot (acres)</label>
+          <input type="text" id="if-${id}-plotAcres" placeholder="e.g. 0.75"
+            oninput="setIntake(${id},'plotAcres',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Zoning</label>
+          <input type="text" id="if-${id}-zoning" placeholder="e.g. R-1, C-2, Mixed Use"
+            oninput="setIntake(${id},'zoning',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Property Class / Land Use</label>
+          <input type="text" id="if-${id}-propertyClass" placeholder=""
+            oninput="setIntake(${id},'propertyClass',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Indoor / Outdoor Space</label>
+          <input type="text" id="if-${id}-indoorOutdoorSpace" placeholder="e.g. 4,000 sq ft indoor, 1,200 sq ft outdoor"
+            oninput="setIntake(${id},'indoorOutdoorSpace',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Purchase Price &amp; Date</label>
+          <input type="text" id="if-${id}-purchasePriceDate" placeholder="e.g. $850,000 — Jan 2018"
+            oninput="setIntake(${id},'purchasePriceDate',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">2025–2026 Market Value</label>
+          <input type="text" id="if-${id}-marketValue2025" placeholder=""
+            oninput="setIntake(${id},'marketValue2025',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">2025–2026 Property Tax</label>
+          <input type="text" id="if-${id}-propertyTax2025" placeholder=""
+            oninput="setIntake(${id},'propertyTax2025',this.value)" />
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Implication / Interpretation of Class and Zone on Code</label>
+          <textarea id="if-${id}-zoneImplication" placeholder="Notes on how zoning and property class affect code requirements..."
+            oninput="setIntake(${id},'zoneImplication',this.value)"></textarea>
+        </div>
+
+        <!-- ── LOCATIONAL LAND RISKS ── -->
+        <div class="form-section-header">Locational Land Risks</div>
+        <div class="form-group">
+          <label class="field-label">FEMA Flood Zone</label>
+          <input type="text" id="if-${id}-femaFloodZone" placeholder="e.g. Zone X, Zone AE"
+            oninput="setIntake(${id},'femaFloodZone',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Fire Hazard Zone</label>
+          <input type="text" id="if-${id}-fireHazardZone" placeholder="e.g. High, Very High, SRA"
+            oninput="setIntake(${id},'fireHazardZone',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Faults &amp; Tsunami Inundation Zones</label>
+          <input type="text" id="if-${id}-faultsTsunami" placeholder=""
+            oninput="setIntake(${id},'faultsTsunami',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Landslides &amp; Liquefaction</label>
+          <input type="text" id="if-${id}-landslidesLiquefaction" placeholder=""
+            oninput="setIntake(${id},'landslidesLiquefaction',this.value)" />
+        </div>
+
+        <!-- ── BUILDING SPECIFICATIONS ── -->
+        <div class="form-section-header">Building Specifications</div>
+        <div class="form-group">
+          <label class="field-label">Square Footage</label>
+          <input type="text" id="if-${id}-sqft" placeholder="e.g. 5,000 sq ft"
+            oninput="setIntake(${id},'sqft',this.value)" />
         </div>
         <div class="form-group">
           <label class="field-label">Year Built</label>
-          <input type="text" id="if-${id}-yearBuilt" placeholder="e.g. 1985" oninput="setIntake(${id},'yearBuilt',this.value)" />
+          <input type="text" id="if-${id}-yearBuilt" placeholder="e.g. 1985"
+            oninput="setIntake(${id},'yearBuilt',this.value)" />
         </div>
         <div class="form-group">
-          <label class="field-label">Occupancy / Use Pattern</label>
-          <input type="text" id="if-${id}-occupancy" placeholder="e.g. Daily, weekday only, seasonal" oninput="setIntake(${id},'occupancy',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Notes on Existing Systems</label>
-          <input type="text" id="if-${id}-systems" placeholder="HVAC, electrical, plumbing notes" oninput="setIntake(${id},'systems',this.value)" />
+          <label class="field-label">Stories</label>
+          <input type="text" id="if-${id}-stories" placeholder="e.g. 2"
+            oninput="setIntake(${id},'stories',this.value)" />
         </div>
         <div class="form-group full">
+          <label class="field-label">Permits</label>
+          <textarea id="if-${id}-permits" placeholder="Known permits, recent renovations, open permits..."
+            oninput="setIntake(${id},'permits',this.value)"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Importance Factor (Structural Integrity)</label>
+          <input type="text" id="if-${id}-importanceFactor" placeholder="e.g. 1.25"
+            oninput="setIntake(${id},'importanceFactor',this.value)" />
+          <div class="field-hint">1.0 = Homes &nbsp;&middot;&nbsp; 1.25 = Schools / Publicly Owned Buildings &nbsp;&middot;&nbsp; 1.5 = Hospitals / Fire Stations<br>Check cover sheet of structural drawings if available.</div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Hayward Score</label>
+          <input type="text" id="if-${id}-haywardScore" placeholder=""
+            oninput="setIntake(${id},'haywardScore',this.value)" />
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Bracing / Next Steps</label>
+          <textarea id="if-${id}-bracingNotes" placeholder="Is bracing necessary? What are the recommended next steps?"
+            oninput="setIntake(${id},'bracingNotes',this.value)"></textarea>
+        </div>
+
+        <!-- ── ACCESSIBILITY ── -->
+        <div class="form-section-header">Accessibility</div>
+        <div class="form-group">
+          <label class="field-label">Walk Score</label>
+          <input type="text" id="if-${id}-walkScore" placeholder="0–100"
+            oninput="setIntake(${id},'walkScore',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Transit Score</label>
+          <input type="text" id="if-${id}-transitScore" placeholder="0–100"
+            oninput="setIntake(${id},'transitScore',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Bike Score</label>
+          <input type="text" id="if-${id}-bikeScore" placeholder="0–100"
+            oninput="setIntake(${id},'bikeScore',this.value)" />
+        </div>
+
+        <!-- ── COMMUNITY KNOWLEDGE AND USE ── -->
+        <div class="form-section-header">Community Knowledge and Use</div>
+        <div class="form-group full">
+          <label class="field-label">Occupancy / Use Pattern</label>
+          <textarea id="if-${id}-occupancy" placeholder="Who uses the space, how often, and in what capacity?"
+            oninput="setIntake(${id},'occupancy',this.value)"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Data Sources</label>
+          <textarea id="if-${id}-dataSources" placeholder="List sources used to gather information for this site..."
+            oninput="setIntake(${id},'dataSources',this.value)"></textarea>
+        </div>
+
+        <!-- ── INITIAL SITE FLAGS ── -->
+        <div class="form-group full" style="margin-top:8px;">
           <label class="field-label">Initial Site Flags</label>
           <div class="flags-grid">
             <label class="flag-item"><input type="checkbox" id="if-${id}-flag-vacant" onchange="setIntakeFlag(${id},'vacant',this.checked)" /> Vacant building</label>
@@ -919,10 +1079,28 @@
             <label class="flag-item"><input type="checkbox" id="if-${id}-flag-structuralConcerns" onchange="setIntakeFlag(${id},'structuralConcerns',this.checked)" /> Major structural concerns</label>
           </div>
         </div>
+
+        <!-- ── RESOURCES ── -->
+        <div class="form-section-header">Resources for Property Information</div>
         <div class="form-group full">
-          <label class="field-label">Additional Notes</label>
-          <textarea id="if-${id}-notes" placeholder="Any other relevant site information..." oninput="setIntake(${id},'notes',this.value)"></textarea>
+          <div class="resources-card">
+            <a class="resource-item" href="https://www.propertyshark.com" target="_blank" rel="noopener">
+              PropertyShark <span class="resource-badge free">Free</span>
+            </a>
+            <span class="resource-item">Chicago Title <span class="resource-badge unknown">Access varies</span></span>
+            <span class="resource-item">First American <span class="resource-badge unknown">Access varies</span></span>
+            <a class="resource-item" href="https://www.buildq.com" target="_blank" rel="noopener">BuildQ <span class="resource-badge paid">$$$</span></a>
+            <a class="resource-item" href="https://www.giraffe.ai" target="_blank" rel="noopener">Giraffe <span class="resource-badge paid">$$$</span></a>
+          </div>
         </div>
+
+        <!-- ── NOTES ── -->
+        <div class="form-section-header">Notes</div>
+        <div class="form-group full">
+          <textarea id="if-${id}-notes" placeholder="Any additional notes about this site..."
+            oninput="setIntake(${id},'notes',this.value)"></textarea>
+        </div>
+
       </div>
     `;
   }
@@ -1360,7 +1538,16 @@
     mountSiteTab(site);
 
     // Restore intake text fields
-    const intakeFields = ['siteName','address','currentUse','owner','sqft','yearBuilt','occupancy','systems','notes'];
+    const intakeFields = [
+      'siteName','address','currentUse','owner','contactName','contactEmail','hoursOfOperation',
+      'plotAcres','zoning','propertyClass','indoorOutdoorSpace','purchasePriceDate',
+      'marketValue2025','propertyTax2025','zoneImplication',
+      'femaFloodZone','fireHazardZone','faultsTsunami','landslidesLiquefaction',
+      'sqft','yearBuilt','stories','permits','importanceFactor','haywardScore','bracingNotes',
+      'walkScore','transitScore','bikeScore',
+      'occupancy','dataSources',
+      'systems','notes', // 'systems' kept for backward compat
+    ];
     intakeFields.forEach(f => {
       const el = document.getElementById(`if-${site.id}-${f}`);
       if (el && site.intake[f] != null) el.value = site.intake[f];
