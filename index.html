@@ -152,6 +152,33 @@
     .red-flag-item input { margin-top: 2px; cursor: pointer; accent-color: #dc2626; }
     .rf-warning { margin-top: 12px; padding: 10px 14px; background: #fee2e2; border: 1px solid #f87171; border-radius: 6px; font-size: 0.875rem; color: #b91c1c; display: none; }
 
+    /* ── Green Flags ── */
+    .green-flags-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; margin-top: 8px; }
+    .green-flag-item { display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 0.875rem; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+    .green-flag-item.checked { background: #dcfce7; border-color: #4ade80; }
+    .green-flag-item input { margin-top: 2px; cursor: pointer; accent-color: #16a34a; }
+    .gf-banner { margin-top: 12px; padding: 10px 14px; background: #dcfce7; border: 1px solid #4ade80; border-radius: 6px; font-size: 0.875rem; color: #15803d; display: none; }
+    .gf-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #16a34a; margin-right: 5px; vertical-align: middle; }
+
+    /* ── Community Engagement tab ── */
+    .ce-section { margin-bottom: 28px; }
+    .ce-section-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--primary); padding-bottom: 7px; border-bottom: 2px solid var(--border); margin-bottom: 14px; }
+    .ce-event-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .ce-event-card .form-group { margin-bottom: 0; }
+    .ce-event-card .full-width { grid-column: 1 / -1; }
+    .ce-add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: #f0fdf4; border: 1px dashed #4ade80; border-radius: 6px; font-size: 0.82rem; font-weight: 600; color: #16a34a; cursor: pointer; transition: background 0.15s; }
+    .ce-add-btn:hover { background: #dcfce7; }
+    .ce-remove-btn { float: right; border: none; background: none; color: #9ca3af; font-size: 0.8rem; cursor: pointer; padding: 0; }
+    .ce-remove-btn:hover { color: #dc2626; }
+    .ce-timeline { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .ce-timeline th { text-align: left; padding: 8px 12px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); background: #f0f5f2; border-bottom: 1px solid var(--border); }
+    .ce-timeline td { padding: 8px 12px; border-bottom: 1px solid #edf2ef; font-size: 0.875rem; vertical-align: middle; }
+    .ce-timeline input[type="text"], .ce-timeline input[type="date"] { width: 100%; }
+    .ce-status-badge { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: 600; }
+    .ce-status-badge.planned  { background: #fef9c3; color: #854d0e; }
+    .ce-status-badge.completed { background: #dcfce7; color: #14532d; }
+    .ce-status-badge.ongoing  { background: #dbeafe; color: #1e3a8a; }
+
     /* ── Score summary ── */
     .score-summary { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 10px; }
     .score-summary h3 { font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
@@ -583,6 +610,17 @@
     { key: 'community',  label: 'Absence of Community Trust' },
   ];
 
+  const GREEN_FLAGS = [
+    { key: 'communityTrust',    label: 'Strong Existing Community Trust' },
+    { key: 'ownership',         label: 'Favorable Ownership / Cooperative Control' },
+    { key: 'existingBackup',    label: 'Existing Backup Power or Solar' },
+    { key: 'accessible',        label: 'Fully ADA Accessible' },
+    { key: 'seismicUpgrade',    label: 'Recent Seismic Retrofit or Upgrade' },
+    { key: 'outdoorSpace',      label: 'Substantial Outdoor / Surge Capacity' },
+    { key: 'partnerReady',      label: 'Partner or Operator Already Identified' },
+    { key: 'transitAccess',     label: 'Excellent Transit / Walk Access' },
+  ];
+
   const SCORE_TIPS = [
     'Not present / major deficiency',
     'Very weak',
@@ -749,8 +787,10 @@
       scores: { physical: {}, community: {}, energy: {}, financial: {} },
       notes:  { physical: {}, community: {}, energy: {}, financial: {} },
       redFlags: {},
+      greenFlags: {},
       walkthrough: {},
       energyLoad: {},
+      engagement: { events: [], takeaways: '', partnerNotes: '' },
       _computed: null,
     };
     sites.push(site);
@@ -840,6 +880,8 @@
           onclick="showInnerTab(${id},'scoring')">Scoring</button>
         <button class="inner-tab-btn" id="itab-btn-${id}-energyload"
           onclick="showInnerTab(${id},'energyload')">Energy Load</button>
+        <button class="inner-tab-btn" id="itab-btn-${id}-engagement"
+          onclick="showInnerTab(${id},'engagement')">Community Engagement</button>
       </div>
 
       <div class="inner-content active" id="itab-${id}-intake">
@@ -856,6 +898,10 @@
 
       <div class="inner-content" id="itab-${id}-energyload">
         ${buildEnergyLoadContent(id)}
+      </div>
+
+      <div class="inner-content" id="itab-${id}-engagement">
+        ${buildEngagementContent(id)}
       </div>
     `;
   }
@@ -903,6 +949,14 @@
         <div class="section-body">
           <p class="section-desc">Critical constraints that may limit feasibility regardless of composite score.</p>
           ${buildRedFlags(id)}
+        </div>
+      </details>
+
+      <details>
+        <summary>Green Flags</summary>
+        <div class="section-body">
+          <p class="section-desc">Notable strengths that increase confidence in this site's suitability as a resilience hub.</p>
+          ${buildGreenFlags(id)}
         </div>
       </details>
 
@@ -1181,6 +1235,27 @@
     `;
   }
 
+  function buildGreenFlags(id) {
+    return `
+      <div class="green-flags-grid">
+        ${GREEN_FLAGS.map(f => `
+          <label class="green-flag-item" id="gf-item-${id}-${f.key}">
+            <input type="checkbox" id="gf-cb-${id}-${f.key}" onchange="setGreenFlag(${id},'${f.key}',this.checked)" />
+            ${esc(f.label)}
+          </label>
+        `).join('')}
+      </div>
+      <div class="form-group" style="margin-top:14px;max-width:500px;">
+        <label class="field-label">Other Green Flag</label>
+        <input type="text" id="gf-other-${id}" placeholder="Describe any other notable strength..."
+          oninput="setGreenFlagOther(${id},this.value)" />
+      </div>
+      <div class="gf-banner" id="gf-banner-${id}">
+        &#10003; Green flags noted. These are positive signals worth highlighting in the feasibility summary.
+      </div>
+    `;
+  }
+
   function buildBar(id, key, label, max) {
     return `
       <div class="score-bar-item">
@@ -1319,7 +1394,7 @@
   }
 
   function showInnerTab(id, name) {
-    ['intake','walkthrough','scoring','energyload'].forEach(t => {
+    ['intake','walkthrough','scoring','energyload','engagement'].forEach(t => {
       document.getElementById(`itab-${id}-${t}`)?.classList.toggle('active', t === name);
       document.getElementById(`itab-btn-${id}-${t}`)?.classList.toggle('active', t === name);
     });
@@ -1361,7 +1436,8 @@
 
     const rows = sites.map(s => {
       const c = s._computed || {};
-      const hasFlags = RED_FLAGS.some(f => s.redFlags[f.key]) || s.redFlags.other;
+      const hasFlags  = RED_FLAGS.some(f => s.redFlags[f.key]) || s.redFlags.other;
+      const hasGFlags = GREEN_FLAGS.some(f => s.greenFlags && s.greenFlags[f.key]) || (s.greenFlags && s.greenFlags.other);
       const flagNames = [
         ...RED_FLAGS.filter(f => s.redFlags[f.key]).map(f => f.label),
         ...(s.redFlags.other ? [s.redFlags.other] : []),
@@ -1370,7 +1446,8 @@
       return `
         <tr>
           <td style="font-weight:600;">
-            ${hasFlags ? '<span class="rf-dot"></span>' : ''}
+            ${hasFlags  ? '<span class="rf-dot"></span>' : ''}
+            ${hasGFlags ? '<span class="gf-dot"></span>' : ''}
             ${esc(s.name)}
             ${s.intake.address ? `<div style="font-size:0.77rem;color:var(--text-light);margin-top:2px;">${esc(s.intake.address)}</div>` : ''}
           </td>
@@ -1401,7 +1478,7 @@
         </thead>
         <tbody>${rows}</tbody>
       </table>
-      <p class="hint-text">Green cells = highest score in category. Red dot = one or more red flags present.</p>
+      <p class="hint-text">Green cells = highest score in category. <span style="color:#dc2626;">●</span> Red dot = red flag(s) present. <span style="color:#16a34a;">●</span> Green dot = green flag(s) present.</p>
     `;
   }
 
@@ -1513,6 +1590,8 @@
           redFlags:    s.redFlags,
           walkthrough: s.walkthrough || {},
           energyLoad:  s.energyLoad  || {},
+          greenFlags:  s.greenFlags  || {},
+          engagement:  s.engagement  || {},
         })),
       };
       await db.collection('toolkitData').doc(currentUser.uid).set(data);
@@ -1558,8 +1637,10 @@
       scores:      saved.scores      || { physical: {}, community: {}, energy: {}, financial: {} },
       notes:       saved.notes       || { physical: {}, community: {}, energy: {}, financial: {} },
       redFlags:    saved.redFlags    || {},
+      greenFlags:  saved.greenFlags  || {},
       walkthrough: saved.walkthrough || {},
       energyLoad:  saved.energyLoad  || {},
+      engagement:  saved.engagement  || { events: [], takeaways: '', partnerNotes: '' },
       _computed: null,
     };
     sites.push(site);
@@ -1619,8 +1700,25 @@
       if (el) el.value = site.redFlags.other;
     }
     refreshRfWarning(site.id);
+
+    // Restore green flags
+    GREEN_FLAGS.forEach(f => {
+      if (site.greenFlags && site.greenFlags[f.key]) {
+        const cb   = document.getElementById(`gf-cb-${site.id}-${f.key}`);
+        const item = document.getElementById(`gf-item-${site.id}-${f.key}`);
+        if (cb)   cb.checked = true;
+        if (item) item.classList.add('checked');
+      }
+    });
+    if (site.greenFlags && site.greenFlags.other) {
+      const el = document.getElementById(`gf-other-${site.id}`);
+      if (el) el.value = site.greenFlags.other;
+    }
+    refreshGfBanner(site.id);
+
     restoreSiteWalkthrough(site);
     restoreSiteEnergyLoad(site);
+    restoreSiteEngagement(site);
     recalculate(site.id);
     updateComparison();
     refreshSummaryTab();
@@ -2069,6 +2167,159 @@
     const item = document.getElementById(`wt-task-item-${id}-${key}`);
     if (item) item.classList.toggle('done', checked);
     save();
+  }
+
+  /* ═══════════════════════════════════════════════════
+     COMMUNITY ENGAGEMENT TAB
+  ═══════════════════════════════════════════════════ */
+  function buildEngagementContent(id) {
+    return `
+      <div class="ce-section">
+        <div class="ce-section-title">Engagement Timeline</div>
+        <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:14px;">
+          Log each touchpoint with this site's community — meetings, site visits, outreach events, calls. Entries are sorted by date.
+        </p>
+        <table class="ce-timeline">
+          <thead>
+            <tr>
+              <th style="width:120px;">Date</th>
+              <th style="width:180px;">Event / Activity</th>
+              <th style="width:110px;">Status</th>
+              <th style="width:130px;">Attendees / Stakeholders</th>
+              <th>Outcome / Notes</th>
+              <th style="width:36px;"></th>
+            </tr>
+          </thead>
+          <tbody id="ce-events-${id}">
+            <!-- rows injected by renderEngagementEvents() -->
+          </tbody>
+        </table>
+        <button class="ce-add-btn" style="margin-top:12px;" onclick="addEngagementEvent(${id})">
+          + Add Event
+        </button>
+      </div>
+
+      <div class="ce-section">
+        <div class="ce-section-title">Key Takeaways &amp; Community Feedback</div>
+        <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:10px;">
+          Summarise what you've heard from the community about this site — priorities, concerns, needs, and non-negotiables.
+        </p>
+        <div class="form-group">
+          <label class="field-label">Community Feedback &amp; Takeaways</label>
+          <textarea id="ce-takeaways-${id}" rows="5" style="width:100%;box-sizing:border-box;"
+            placeholder="e.g. Residents strongly prefer this location; main concern is parking access during events. Key partner: Nuestra Casa..."
+            oninput="setEngagement(${id},'takeaways',this.value)"></textarea>
+        </div>
+      </div>
+
+      <div class="ce-section">
+        <div class="ce-section-title">Partner &amp; Operator Notes</div>
+        <div class="form-group">
+          <label class="field-label">Potential Partners / Operators Identified</label>
+          <textarea id="ce-partnerNotes-${id}" rows="4" style="width:100%;box-sizing:border-box;"
+            placeholder="e.g. County OES expressed interest; Nuestra Casa could co-manage; Peninsula Clean Energy for energy program..."
+            oninput="setEngagement(${id},'partnerNotes',this.value)"></textarea>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderEngagementEvents(id) {
+    const s = getSite(id); if (!s) return;
+    const events = (s.engagement && s.engagement.events) ? s.engagement.events : [];
+    const tbody = document.getElementById(`ce-events-${id}`);
+    if (!tbody) return;
+
+    const STATUS_OPTIONS = ['Planned','Ongoing','Completed'];
+
+    tbody.innerHTML = events.map((ev, idx) => `
+      <tr id="ce-ev-row-${id}-${idx}">
+        <td><input type="date" value="${esc(ev.date||'')}"
+          onchange="setEngagementEvent(${id},${idx},'date',this.value)" /></td>
+        <td><input type="text" value="${esc(ev.title||'')}" placeholder="e.g. Community Meeting"
+          oninput="setEngagementEvent(${id},${idx},'title',this.value)" /></td>
+        <td>
+          <select onchange="setEngagementEvent(${id},${idx},'status',this.value)"
+            style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;">
+            ${STATUS_OPTIONS.map(o => `<option value="${o}"${ev.status===o?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </td>
+        <td><input type="text" value="${esc(ev.attendees||'')}" placeholder="Names / orgs"
+          oninput="setEngagementEvent(${id},${idx},'attendees',this.value)" /></td>
+        <td><input type="text" value="${esc(ev.notes||'')}" placeholder="Outcome / next steps"
+          oninput="setEngagementEvent(${id},${idx},'notes',this.value)" /></td>
+        <td><button class="ce-remove-btn" title="Remove row" onclick="removeEngagementEvent(${id},${idx})">✕</button></td>
+      </tr>
+    `).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:16px;font-size:0.82rem;">No events logged yet. Click + Add Event to begin.</td></tr>`;
+  }
+
+  function addEngagementEvent(id) {
+    const s = getSite(id); if (!s) return;
+    if (!s.engagement) s.engagement = { events: [], takeaways: '', partnerNotes: '' };
+    if (!s.engagement.events) s.engagement.events = [];
+    s.engagement.events.push({ date: '', title: '', status: 'Planned', attendees: '', notes: '' });
+    renderEngagementEvents(id);
+    save();
+  }
+
+  function removeEngagementEvent(id, idx) {
+    const s = getSite(id); if (!s) return;
+    s.engagement.events.splice(idx, 1);
+    renderEngagementEvents(id);
+    save();
+  }
+
+  function setEngagementEvent(id, idx, field, value) {
+    const s = getSite(id); if (!s) return;
+    if (!s.engagement || !s.engagement.events[idx]) return;
+    s.engagement.events[idx][field] = value;
+    save();
+  }
+
+  function setEngagement(id, field, value) {
+    const s = getSite(id); if (!s) return;
+    if (!s.engagement) s.engagement = { events: [], takeaways: '', partnerNotes: '' };
+    s.engagement[field] = value;
+    save();
+  }
+
+  function restoreSiteEngagement(site) {
+    const d = site.engagement || {};
+    // Restore textarea fields
+    ['takeaways','partnerNotes'].forEach(f => {
+      const el = document.getElementById(`ce-${f}-${site.id}`);
+      if (el && d[f]) el.value = d[f];
+    });
+    // Render event rows
+    renderEngagementEvents(site.id);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     GREEN FLAG HANDLERS
+  ═══════════════════════════════════════════════════ */
+  function setGreenFlag(id, key, checked) {
+    const s = getSite(id); if (!s) return;
+    if (!s.greenFlags) s.greenFlags = {};
+    s.greenFlags[key] = checked;
+    const item = document.getElementById(`gf-item-${id}-${key}`);
+    if (item) item.className = `green-flag-item${checked ? ' checked' : ''}`;
+    refreshGfBanner(id);
+    save();
+  }
+
+  function setGreenFlagOther(id, value) {
+    const s = getSite(id); if (!s) return;
+    if (!s.greenFlags) s.greenFlags = {};
+    s.greenFlags.other = value.trim();
+    refreshGfBanner(id);
+    save();
+  }
+
+  function refreshGfBanner(id) {
+    const s = getSite(id); if (!s) return;
+    const has = GREEN_FLAGS.some(f => s.greenFlags[f.key]) || s.greenFlags.other;
+    const el = document.getElementById(`gf-banner-${id}`);
+    if (el) el.style.display = has ? 'block' : 'none';
   }
 
   function buildWalkthroughSection(id) {
