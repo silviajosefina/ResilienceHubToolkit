@@ -236,6 +236,24 @@
     .inner-content { display: none; }
     .inner-content.active { display: block; }
 
+    /* ── Energy Load ── */
+    .el-section-note { font-size: 0.78rem; color: var(--text-light); margin-bottom: 14px; line-height: 1.5; }
+    .load-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .load-table th {
+      text-align: left; padding: 8px 12px; font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light);
+      background: #f0f5f2; border-bottom: 1px solid var(--border);
+    }
+    .load-table th.center, .load-table td.center { text-align: center; }
+    .load-table td { padding: 8px 12px; border-bottom: 1px solid #edf2ef; font-size: 0.875rem; vertical-align: middle; }
+    .load-table tr:last-child td { border-bottom: none; }
+    .load-table input[type="text"] { width: 90px; }
+    .load-table input[type="checkbox"] { accent-color: var(--primary); width: 15px; height: 15px; cursor: pointer; }
+    .el-tag {
+      display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.68rem;
+      font-weight: 600; background: #e8f5ee; color: var(--primary); margin-left: 8px; vertical-align: middle;
+    }
+
     /* ── Building Walkthrough ── */
     .wt-header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 4px; }
     .wt-field { padding: 12px 0; border-bottom: 1px solid #edf2ef; }
@@ -574,6 +592,18 @@
     'Excellent / highly suitable',
   ];
 
+  const CRITICAL_LOADS = [
+    { key: 'hvac',           label: 'HVAC / Heating' },
+    { key: 'cooling',        label: 'Cooling / A/C' },
+    { key: 'lighting',       label: 'Lighting' },
+    { key: 'refrigeration',  label: 'Refrigeration / Freezer' },
+    { key: 'medical',        label: 'Medical Equipment' },
+    { key: 'communications', label: 'Communications / IT' },
+    { key: 'waterHeating',   label: 'Water Heating' },
+    { key: 'cooking',        label: 'Cooking / Kitchen' },
+    { key: 'evCharging',     label: 'EV Charging' },
+  ];
+
   let sites = [];
   let siteCounter = 0;
 
@@ -720,6 +750,7 @@
       notes:  { physical: {}, community: {}, energy: {}, financial: {} },
       redFlags: {},
       walkthrough: {},
+      energyLoad: {},
       _computed: null,
     };
     sites.push(site);
@@ -807,6 +838,8 @@
           onclick="showInnerTab(${id},'walkthrough')">Building Walkthrough</button>
         <button class="inner-tab-btn" id="itab-btn-${id}-scoring"
           onclick="showInnerTab(${id},'scoring')">Scoring</button>
+        <button class="inner-tab-btn" id="itab-btn-${id}-energyload"
+          onclick="showInnerTab(${id},'energyload')">Energy Load</button>
       </div>
 
       <div class="inner-content active" id="itab-${id}-intake">
@@ -819,6 +852,10 @@
 
       <div class="inner-content" id="itab-${id}-scoring">
         ${buildScoringContent(id)}
+      </div>
+
+      <div class="inner-content" id="itab-${id}-energyload">
+        ${buildEnergyLoadContent(id)}
       </div>
     `;
   }
@@ -1282,7 +1319,7 @@
   }
 
   function showInnerTab(id, name) {
-    ['intake','walkthrough','scoring'].forEach(t => {
+    ['intake','walkthrough','scoring','energyload'].forEach(t => {
       document.getElementById(`itab-${id}-${t}`)?.classList.toggle('active', t === name);
       document.getElementById(`itab-btn-${id}-${t}`)?.classList.toggle('active', t === name);
     });
@@ -1475,6 +1512,7 @@
           notes:       s.notes,
           redFlags:    s.redFlags,
           walkthrough: s.walkthrough || {},
+          energyLoad:  s.energyLoad  || {},
         })),
       };
       await db.collection('toolkitData').doc(currentUser.uid).set(data);
@@ -1521,6 +1559,7 @@
       notes:       saved.notes       || { physical: {}, community: {}, energy: {}, financial: {} },
       redFlags:    saved.redFlags    || {},
       walkthrough: saved.walkthrough || {},
+      energyLoad:  saved.energyLoad  || {},
       _computed: null,
     };
     sites.push(site);
@@ -1581,6 +1620,7 @@
     }
     refreshRfWarning(site.id);
     restoreSiteWalkthrough(site);
+    restoreSiteEnergyLoad(site);
     recalculate(site.id);
     updateComparison();
     refreshSummaryTab();
@@ -1722,6 +1762,292 @@
     rows.push(['Composite Total',      c.total  != null ? `${c.total.toFixed(1)} / 90` : '—']);
 
     return rows;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     ENERGY LOAD (per-site)
+  ═══════════════════════════════════════════════════ */
+  function setEL(id, field, value) {
+    const s = getSite(id); if (!s) return;
+    if (!s.energyLoad) s.energyLoad = {};
+    s.energyLoad[field] = value;
+    save();
+  }
+
+  function setELCritLoad(id, loadKey, subField, value) {
+    const s = getSite(id); if (!s) return;
+    if (!s.energyLoad) s.energyLoad = {};
+    if (!s.energyLoad.critLoads) s.energyLoad.critLoads = {};
+    if (!s.energyLoad.critLoads[loadKey]) s.energyLoad.critLoads[loadKey] = {};
+    s.energyLoad.critLoads[loadKey][subField] = value;
+    save();
+  }
+
+  function buildEnergyLoadContent(id) {
+    return `
+      <div class="form-grid">
+        <div class="callout" style="margin-bottom:4px;grid-column:1/-1;">
+          Key inputs for energy system sizing and optimization. Utility bills and panel info from the Building Walkthrough are the primary sources.
+        </div>
+
+        <!-- ── UTILITY & BILLING ── -->
+        <div class="form-section-header">Utility &amp; Billing</div>
+        <div class="form-group">
+          <label class="field-label">Utility Provider</label>
+          <input type="text" id="el-${id}-utilityProvider" placeholder="e.g. PG&amp;E, Peninsula Clean Energy"
+            oninput="setEL(${id},'utilityProvider',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Current Tariff / Rate</label>
+          <input type="text" id="el-${id}-tariffRate" placeholder="e.g. E-19, TOU-GS-3, $/kWh"
+            oninput="setEL(${id},'tariffRate',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Annual Consumption (kWh/yr)</label>
+          <input type="text" id="el-${id}-annualConsumption" placeholder=""
+            oninput="setEL(${id},'annualConsumption',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Average Monthly Bill ($)</label>
+          <input type="text" id="el-${id}-monthlyAvgBill" placeholder=""
+            oninput="setEL(${id},'monthlyAvgBill',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Summer Peak Demand (kW)</label>
+          <input type="text" id="el-${id}-summerPeakDemand" placeholder=""
+            oninput="setEL(${id},'summerPeakDemand',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Winter Peak Demand (kW)</label>
+          <input type="text" id="el-${id}-winterPeakDemand" placeholder=""
+            oninput="setEL(${id},'winterPeakDemand',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Summer Utility Bill ($)</label>
+          <input type="text" id="el-${id}-summerBill" placeholder=""
+            oninput="setEL(${id},'summerBill',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Winter Utility Bill ($)</label>
+          <input type="text" id="el-${id}-winterBill" placeholder=""
+            oninput="setEL(${id},'winterBill',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Net Metering Eligible?</label>
+          <select id="el-${id}-netMetering" onchange="setEL(${id},'netMetering',this.value)"
+            style="padding:7px 10px;border:1px solid var(--border);border-radius:5px;font-size:0.875rem;background:white;color:var(--text);width:100%;">
+            <option value="">Unknown</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="maybe">Needs verification</option>
+          </select>
+        </div>
+
+        <!-- ── BUILDING LOAD PROFILE ── -->
+        <div class="form-section-header">Building Load Profile</div>
+        <div class="form-group">
+          <label class="field-label">Estimated Total Connected Load (kW)</label>
+          <input type="text" id="el-${id}-totalConnectedLoad" placeholder=""
+            oninput="setEL(${id},'totalConnectedLoad',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Estimated Peak Demand (kW)</label>
+          <input type="text" id="el-${id}-peakDemand" placeholder=""
+            oninput="setEL(${id},'peakDemand',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Average Daily Consumption (kWh/day)</label>
+          <input type="text" id="el-${id}-avgDailyConsumption" placeholder=""
+            oninput="setEL(${id},'avgDailyConsumption',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Typical Operating Hours per Day</label>
+          <input type="text" id="el-${id}-operatingHours" placeholder="e.g. 10"
+            oninput="setEL(${id},'operatingHours',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">HVAC Type &amp; Age</label>
+          <input type="text" id="el-${id}-hvacTypeAge" placeholder="e.g. Rooftop packaged unit, 2012"
+            oninput="setEL(${id},'hvacTypeAge',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">HVAC Capacity (BTU or tons)</label>
+          <input type="text" id="el-${id}-hvacCapacity" placeholder="e.g. 5 tons, 60,000 BTU"
+            oninput="setEL(${id},'hvacCapacity',this.value)" />
+        </div>
+
+        <!-- ── CRITICAL LOAD INVENTORY ── -->
+        <div class="form-section-header">Critical Load Inventory <span class="el-tag">Optimization Input</span></div>
+        <div class="form-group full">
+          <p class="el-section-note">For each load, estimate its size and mark whether it must be served during a grid outage. These drive the sizing of backup and storage systems.</p>
+          <table class="load-table">
+            <thead>
+              <tr>
+                <th>Load</th>
+                <th>Est. Size (kW)</th>
+                <th class="center">Must serve during outage?</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${CRITICAL_LOADS.map(cl => `
+                <tr>
+                  <td style="font-weight:500;">${esc(cl.label)}</td>
+                  <td>
+                    <input type="text" id="el-${id}-cl-${cl.key}-kw" placeholder="kW"
+                      oninput="setELCritLoad(${id},'${cl.key}','kw',this.value)" />
+                  </td>
+                  <td class="center">
+                    <input type="checkbox" id="el-${id}-cl-${cl.key}-critical"
+                      onchange="setELCritLoad(${id},'${cl.key}','critical',this.checked)" />
+                  </td>
+                  <td>
+                    <input type="text" class="notes-input" id="el-${id}-cl-${cl.key}-notes" placeholder="Notes..."
+                      oninput="setELCritLoad(${id},'${cl.key}','notes',this.value)" />
+                  </td>
+                </tr>
+              `).join('')}
+              <tr>
+                <td>
+                  <input type="text" id="el-${id}-cl-other-label" placeholder="Other load..."
+                    oninput="setELCritLoad(${id},'other','label',this.value)" style="width:130px;" />
+                </td>
+                <td>
+                  <input type="text" id="el-${id}-cl-other-kw" placeholder="kW"
+                    oninput="setELCritLoad(${id},'other','kw',this.value)" />
+                </td>
+                <td class="center">
+                  <input type="checkbox" id="el-${id}-cl-other-critical"
+                    onchange="setELCritLoad(${id},'other','critical',this.checked)" />
+                </td>
+                <td>
+                  <input type="text" class="notes-input" id="el-${id}-cl-other-notes" placeholder="Notes..."
+                    oninput="setELCritLoad(${id},'other','notes',this.value)" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── RESILIENCE REQUIREMENTS ── -->
+        <div class="form-section-header">Resilience Requirements <span class="el-tag">Optimization Input</span></div>
+        <div class="form-group">
+          <label class="field-label">Target Outage Duration to Cover (hours)</label>
+          <input type="text" id="el-${id}-targetOutageDuration" placeholder="e.g. 72"
+            oninput="setEL(${id},'targetOutageDuration',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Estimated People Served During Emergency</label>
+          <input type="text" id="el-${id}-peopleServed" placeholder="e.g. 200"
+            oninput="setEL(${id},'peopleServed',this.value)" />
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Priority Load Notes</label>
+          <textarea id="el-${id}-priorityLoadNotes" placeholder="Describe which services are most critical to maintain (e.g. cooling for elderly, medical refrigeration, communications)..."
+            oninput="setEL(${id},'priorityLoadNotes',this.value)"></textarea>
+        </div>
+
+        <!-- ── SOLAR POTENTIAL ── -->
+        <div class="form-section-header">Solar Potential <span class="el-tag">Optimization Input</span></div>
+        <div class="form-group">
+          <label class="field-label">Roof Area Available for Solar (sq ft)</label>
+          <input type="text" id="el-${id}-roofAreaSolar" placeholder=""
+            oninput="setEL(${id},'roofAreaSolar',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Roof Orientation</label>
+          <input type="text" id="el-${id}-roofOrientation" placeholder="e.g. South-facing, flat"
+            oninput="setEL(${id},'roofOrientation',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Roof Tilt (degrees)</label>
+          <input type="text" id="el-${id}-roofTilt" placeholder="e.g. 15°, flat"
+            oninput="setEL(${id},'roofTilt',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Estimated Solar Potential (kW)</label>
+          <input type="text" id="el-${id}-solarPotential" placeholder=""
+            oninput="setEL(${id},'solarPotential',this.value)" />
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Shading &amp; Structural Notes</label>
+          <textarea id="el-${id}-solarNotes" placeholder="Obstructions, structural capacity for panels, other notes..."
+            oninput="setEL(${id},'solarNotes',this.value)"></textarea>
+        </div>
+
+        <!-- ── EXISTING BACKUP SYSTEMS ── -->
+        <div class="form-section-header">Existing Backup Systems</div>
+        <div class="form-group">
+          <label class="field-label">Generator Size (kW)</label>
+          <input type="text" id="el-${id}-generatorSize" placeholder="Leave blank if none"
+            oninput="setEL(${id},'generatorSize',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Generator Fuel Type</label>
+          <input type="text" id="el-${id}-generatorFuel" placeholder="e.g. Diesel, Natural gas, Propane"
+            oninput="setEL(${id},'generatorFuel',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Generator Runtime at Full Load (hrs)</label>
+          <input type="text" id="el-${id}-generatorRuntime" placeholder=""
+            oninput="setEL(${id},'generatorRuntime',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Battery Storage — Power (kW)</label>
+          <input type="text" id="el-${id}-batteryPower" placeholder="Leave blank if none"
+            oninput="setEL(${id},'batteryPower',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Battery Storage — Capacity (kWh)</label>
+          <input type="text" id="el-${id}-batteryCapacity" placeholder=""
+            oninput="setEL(${id},'batteryCapacity',this.value)" />
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Other Backup / Notes</label>
+          <textarea id="el-${id}-backupNotes" placeholder="Any other existing backup systems or relevant notes..."
+            oninput="setEL(${id},'backupNotes',this.value)"></textarea>
+        </div>
+
+        <!-- ── NOTES ── -->
+        <div class="form-section-header">Notes</div>
+        <div class="form-group full">
+          <textarea id="el-${id}-notes" placeholder="General notes on energy systems for this site..."
+            oninput="setEL(${id},'notes',this.value)"></textarea>
+        </div>
+
+      </div>
+    `;
+  }
+
+  function restoreSiteEnergyLoad(site) {
+    const d = site.energyLoad || {};
+    const fields = [
+      'utilityProvider','tariffRate','annualConsumption','monthlyAvgBill',
+      'summerPeakDemand','winterPeakDemand','summerBill','winterBill','netMetering',
+      'totalConnectedLoad','peakDemand','avgDailyConsumption','operatingHours',
+      'hvacTypeAge','hvacCapacity',
+      'targetOutageDuration','peopleServed','priorityLoadNotes',
+      'roofAreaSolar','roofOrientation','roofTilt','solarPotential','solarNotes',
+      'generatorSize','generatorFuel','generatorRuntime',
+      'batteryPower','batteryCapacity','backupNotes','notes',
+    ];
+    fields.forEach(f => {
+      const el = document.getElementById(`el-${site.id}-${f}`);
+      if (el && d[f] != null) el.value = d[f];
+    });
+    // Critical loads
+    const allLoadKeys = [...CRITICAL_LOADS.map(cl => cl.key), 'other'];
+    allLoadKeys.forEach(key => {
+      const cl = d.critLoads?.[key] || {};
+      const kwEl = document.getElementById(`el-${site.id}-cl-${key}-kw`);
+      const cbEl = document.getElementById(`el-${site.id}-cl-${key}-critical`);
+      const notesEl = document.getElementById(`el-${site.id}-cl-${key}-notes`);
+      const labelEl = document.getElementById(`el-${site.id}-cl-${key}-label`);
+      if (kwEl && cl.kw != null)       kwEl.value   = cl.kw;
+      if (cbEl && cl.critical)         cbEl.checked  = true;
+      if (notesEl && cl.notes != null) notesEl.value = cl.notes;
+      if (labelEl && cl.label != null) labelEl.value = cl.label;
+    });
   }
 
   /* ═══════════════════════════════════════════════════
