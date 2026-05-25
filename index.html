@@ -281,6 +281,20 @@
       font-weight: 600; background: #e8f5ee; color: var(--primary); margin-left: 8px; vertical-align: middle;
     }
 
+    /* ── Energy Load — Model Results ── */
+    .el-run-bar { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; padding: 14px 0 4px; }
+    .el-run-status { font-size: 0.8rem; color: var(--text-light); }
+    .el-results-card { grid-column: 1 / -1; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 8px 0 18px; }
+    .el-results-header { background: var(--primary); color: white; padding: 12px 16px; font-weight: 600; font-size: 0.88rem; display: flex; justify-content: space-between; align-items: center; }
+    .el-results-note { padding: 9px 16px; background: #f5f9f6; border-bottom: 1px solid var(--border); font-size: 0.77rem; color: var(--text-light); }
+    .el-results-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .el-results-table th { padding: 8px 12px; text-align: left; background: #f0f5f2; border-bottom: 1px solid var(--border); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-light); white-space: nowrap; }
+    .el-results-table td { padding: 8px 12px; border-bottom: 1px solid #edf2ef; }
+    .el-results-table tr:last-child td { border-bottom: none; }
+    .el-outage-row { background: #f0fdf4; }
+    .el-outage-row td { font-weight: 500; }
+    .el-model-divider { grid-column: 1 / -1; border: none; border-top: 2px solid var(--border); margin: 18px 0 4px; }
+
     /* ── Building Walkthrough ── */
     .wt-header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 4px; }
     .wt-field { padding: 12px 0; border-bottom: 1px solid #edf2ef; }
@@ -1884,6 +1898,61 @@
   function buildEnergyLoadContent(id) {
     return `
       <div class="form-grid">
+
+        <!-- ── SIZING MODEL INPUTS ── -->
+        <div class="form-section-header">Sizing Model Inputs <span class="el-tag">Runs Optimization</span></div>
+        <div class="callout" style="grid-column:1/-1;margin-bottom:4px;">
+          Enter these 7 fields and click <strong>Run Sizing Model</strong> to calculate recommended PV and battery sizes across 4 scenarios. Building name and square footage are pre-filled from Site Intake if available.
+        </div>
+        <div class="form-group">
+          <label class="field-label">Building Name</label>
+          <input type="text" id="el-${id}-modelBuildingName" placeholder="e.g. Eastside Community Center"
+            oninput="setEL(${id},'modelBuildingName',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">ZIP Code</label>
+          <input type="text" id="el-${id}-modelZipCode" placeholder="e.g. 94025"
+            oninput="setEL(${id},'modelZipCode',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Total Square Footage</label>
+          <input type="text" id="el-${id}-modelSqft" placeholder="e.g. 8000"
+            oninput="setEL(${id},'modelSqft',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Kitchen Square Footage</label>
+          <input type="text" id="el-${id}-modelKitchenSqft" placeholder="e.g. 400"
+            oninput="setEL(${id},'modelKitchenSqft',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label"># Active Buildings on Site</label>
+          <input type="number" min="1" id="el-${id}-modelActiveBuildings" placeholder="e.g. 1"
+            oninput="setEL(${id},'modelActiveBuildings',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label"># Refrigerators</label>
+          <input type="number" min="0" id="el-${id}-modelRefrigerators" placeholder="e.g. 2"
+            oninput="setEL(${id},'modelRefrigerators',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label"># EV Charge Ports</label>
+          <input type="number" min="0" id="el-${id}-modelEvPorts" placeholder="e.g. 4"
+            oninput="setEL(${id},'modelEvPorts',this.value)" />
+        </div>
+
+        <div class="el-run-bar">
+          <button class="btn btn-green" id="el-run-btn-${id}" onclick="runSizingModel(${id})">
+            &#9654; Run Sizing Model
+          </button>
+          <span class="el-run-status" id="el-run-status-${id}"></span>
+        </div>
+
+        <div id="el-results-${id}" style="display:none;grid-column:1/-1;"></div>
+
+        <hr class="el-model-divider" />
+
+        <!-- ── UTILITY & BILLING ── -->
+        <div class="form-section-header">Utility &amp; Billing</div>
         <div class="callout" style="margin-bottom:4px;grid-column:1/-1;">
           Key inputs for energy system sizing and optimization. Utility bills and panel info from the Building Walkthrough are the primary sources.
         </div>
@@ -2119,6 +2188,33 @@
 
   function restoreSiteEnergyLoad(site) {
     const d = site.energyLoad || {};
+
+    // Restore 7 model input fields (pre-populate from intake if blank)
+    const modelFields = [
+      'modelBuildingName','modelZipCode','modelSqft','modelKitchenSqft',
+      'modelActiveBuildings','modelRefrigerators','modelEvPorts',
+    ];
+    modelFields.forEach(f => {
+      const el = document.getElementById(`el-${site.id}-${f}`);
+      if (!el) return;
+      if (d[f] != null && d[f] !== '') {
+        el.value = d[f];
+      } else {
+        // Pre-fill from intake where possible
+        if (f === 'modelBuildingName') el.value = site.intake?.siteName || '';
+        if (f === 'modelSqft')         el.value = site.intake?.sqft      || '';
+      }
+    });
+
+    // Re-render saved model results if present
+    if (d.modelResults) {
+      renderSizingResults(site.id, d.modelResults);
+      const status = document.getElementById(`el-run-status-${site.id}`);
+      if (status && d.modelRunAt) {
+        status.textContent = `Last run: ${new Date(d.modelRunAt).toLocaleString()}`;
+      }
+    }
+
     const fields = [
       'utilityProvider','tariffRate','annualConsumption','monthlyAvgBill',
       'summerPeakDemand','winterPeakDemand','summerBill','winterBill','netMetering',
@@ -2146,6 +2242,130 @@
       if (notesEl && cl.notes != null) notesEl.value = cl.notes;
       if (labelEl && cl.label != null) labelEl.value = cl.label;
     });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     SIZING MODEL — API CALL
+  ═══════════════════════════════════════════════════ */
+  const SIZING_API = 'https://resilience-sizing-api.onrender.com';
+
+  async function runSizingModel(id) {
+    const s = getSite(id); if (!s) return;
+    const el = s.energyLoad || {};
+
+    // Read the 7 inputs — fall back to intake for name/sqft
+    const buildingName    = (document.getElementById(`el-${id}-modelBuildingName`)?.value || s.intake?.siteName || s.name || '').trim();
+    const zipCode         = (document.getElementById(`el-${id}-modelZipCode`)?.value || '').trim();
+    const sqft            = parseFloat(document.getElementById(`el-${id}-modelSqft`)?.value || s.intake?.sqft || '0');
+    const kitchenSqft     = parseFloat(document.getElementById(`el-${id}-modelKitchenSqft`)?.value || '0');
+    const activeBuildings = parseInt(document.getElementById(`el-${id}-modelActiveBuildings`)?.value || '1', 10);
+    const numRefrigerators= parseInt(document.getElementById(`el-${id}-modelRefrigerators`)?.value || '0', 10);
+    const evPorts         = parseInt(document.getElementById(`el-${id}-modelEvPorts`)?.value || '0', 10);
+
+    if (!zipCode) { alert('Please enter a ZIP code before running the model.'); return; }
+    if (!sqft || sqft <= 0) { alert('Please enter total square footage before running the model.'); return; }
+
+    const btn    = document.getElementById(`el-run-btn-${id}`);
+    const status = document.getElementById(`el-run-status-${id}`);
+    const resDiv = document.getElementById(`el-results-${id}`);
+
+    if (btn) btn.disabled = true;
+    if (status) status.textContent = 'Running… this may take 15–30 s on first call.';
+    if (resDiv) resDiv.style.display = 'none';
+
+    try {
+      const resp = await fetch(`${SIZING_API}/api/size`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          building_name:     buildingName || 'Site',
+          zip_code:          zipCode,
+          sqft:              sqft,
+          kitchen_sqft:      kitchenSqft,
+          active_buildings:  activeBuildings,
+          num_refrigerators: numRefrigerators,
+          ev_ports:          evPorts,
+        }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.detail || `Server error ${resp.status}`);
+      }
+
+      const data = await resp.json();
+
+      // Persist results
+      if (!s.energyLoad) s.energyLoad = {};
+      s.energyLoad.modelResults = data;
+      s.energyLoad.modelRunAt   = new Date().toISOString();
+      save();
+
+      renderSizingResults(id, data);
+      if (status) status.textContent = `Last run: ${new Date().toLocaleString()}`;
+
+    } catch (err) {
+      if (status) status.textContent = `Error: ${err.message}`;
+      console.error('Sizing model error:', err);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function renderSizingResults(id, data) {
+    const resDiv = document.getElementById(`el-results-${id}`);
+    if (!resDiv) return;
+
+    const LABELS = {
+      winter_bau:    'Winter — Normal Operations',
+      winter_outage: 'Winter — Outage (72 h)',
+      summer_bau:    'Summer — Normal Operations',
+      summer_outage: 'Summer — Outage (72 h)',
+    };
+
+    const fmt  = (v, d=1) => (v != null && !isNaN(v)) ? Number(v).toFixed(d) : '—';
+    const fmtK = v => (v != null && !isNaN(v)) ? '$' + Math.round(v / 1000) + 'K' : '—';
+
+    const rows = (data.scenarios || []).map(sc => `
+      <tr class="${sc.load_case === 'Outage' ? 'el-outage-row' : ''}">
+        <td style="font-weight:600;white-space:nowrap;">${LABELS[sc.scenario] || sc.scenario}</td>
+        <td>${fmt(sc.pv_kw)}</td>
+        <td>${fmt(sc.battery_kwh)}</td>
+        <td>${fmt(sc.peak_load_kw)}</td>
+        <td>${fmt(sc.pv_roof_area_ft2, 0)}</td>
+        <td>${fmtK(sc.pv_capex)}</td>
+        <td>${fmtK(sc.battery_capex)}</td>
+        <td>${fmt(sc.people_served, 0)}</td>
+      </tr>
+    `).join('');
+
+    resDiv.innerHTML = `
+      <div class="el-results-card">
+        <div class="el-results-header">
+          <span>Model Results — ${esc(data.building_name)} &nbsp;(ZIP ${esc(data.zip_code)})</span>
+          <span style="font-size:0.72rem;font-weight:400;opacity:0.85;">Stub weather &bull; NSRDB integration coming</span>
+        </div>
+        <div class="el-results-note">
+          Green rows are the <strong>outage scenarios</strong> — the binding design cases for sizing backup power. Costs are rough order-of-magnitude estimates.
+        </div>
+        <table class="el-results-table">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>PV (kW)</th>
+              <th>Battery (kWh)</th>
+              <th>Peak Load (kW)</th>
+              <th>Roof Area (ft²)</th>
+              <th>PV Cost</th>
+              <th>Battery Cost</th>
+              <th>People Served</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+    resDiv.style.display = 'block';
   }
 
   /* ═══════════════════════════════════════════════════
