@@ -43,24 +43,56 @@
     .main { max-width: 1120px; margin: 0 auto; padding: 24px 16px; }
 
     /* ── Tabs ── */
-    .tabs-bar { display: flex; gap: 2px; flex-wrap: wrap; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
+    .tabs-bar { display: flex; align-items: center; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
     .tab-btn {
-      padding: 10px 18px; border: none; background: transparent; cursor: pointer;
-      font-size: 0.85rem; color: var(--text-light);
-      border-bottom: 3px solid transparent; margin-bottom: -2px;
-      border-radius: 4px 4px 0 0; transition: all 0.15s;
+      padding: 12px 22px; border: none; background: none; cursor: pointer;
+      font-size: 0.88rem; font-weight: 500; color: var(--text-light);
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: all 0.15s; white-space: nowrap;
     }
-    .tab-btn:hover  { background: #e5ede8; color: var(--primary); }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; background: #eef5f0; }
+    .tab-btn:hover  { color: var(--primary); }
+    .tab-btn.active { color: var(--primary); font-weight: 700; border-bottom-color: var(--primary); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+
+    /* Numbered phase circle in tab button */
+    .phase-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--border); color: var(--text-light);
+      font-size: 0.68rem; font-weight: 700; margin-right: 7px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tab-btn.active .phase-num { background: var(--primary); color: #fff; }
 
     /* Progress badge in tab */
     .tab-progress { font-size: 0.72rem; font-weight: 500; color: var(--text-light); margin-left: 6px; opacity: 0.8; }
     .tab-btn.active .tab-progress { color: var(--primary-light); }
 
     /* ── Site header ── */
-    .site-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    .site-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+    .flag-bar { display: flex; align-items: center; gap: 12px; background: #f8f9fa; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; flex-wrap: wrap; }
+    .flag-bar-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); flex-shrink: 0; }
+    .flag-bar-chips { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+    .flag-bar-empty { font-size: 0.78rem; color: #bbb; font-style: italic; }
+    .flag-chip-red  { display: inline-flex; align-items: center; gap: 4px; background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; border-radius: 20px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; }
+    .flag-chip-green{ display: inline-flex; align-items: center; gap: 4px; background: #f0fdf4; border: 1px solid #86efac; color: #15803d; border-radius: 20px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; }
+    .flag-display { display: flex; flex-wrap: wrap; gap: 8px; min-height: 28px; align-items: center; }
+    .flag-display-empty { font-size: 0.82rem; color: #aaa; font-style: italic; }
+    .flag-section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 8px; }
+    .flag-section-head { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .flag-section-head.green { color: #15803d; }
+    .flag-section-head.red   { color: #b91c1c; }
+    .flag-bar-toggle { flex-shrink: 0; font-size: 0.78rem; font-weight: 600; background: white; border: 1.5px solid var(--primary); border-radius: 6px; padding: 4px 12px; cursor: pointer; color: var(--primary); transition: background 0.15s; }
+    .flag-bar-toggle:hover { background: var(--primary); color: white; }
+    .flag-editor { background: #fafafa; border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+    .flag-editor-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .flag-editor-head { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .flag-editor-head.red { color: #b91c1c; }
+    .flag-editor-head.green { color: #15803d; }
+    .flag-editor-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; padding: 4px 0; cursor: pointer; color: var(--text); }
+    .flag-editor-item input { accent-color: var(--primary); width: 14px; height: 14px; flex-shrink: 0; cursor: pointer; }
+    .flag-editor-other { margin-top: 8px; width: 100%; box-sizing: border-box; font-size: 0.82rem; padding: 6px 9px; border: 1px solid var(--border); border-radius: 5px; }
     .site-name-input {
       font-size: 1.2rem; font-weight: 600; color: var(--primary);
       border: none; background: transparent; padding: 0; width: 240px;
@@ -79,9 +111,16 @@
     details summary::-webkit-details-marker { display: none; }
     details summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; color: var(--primary-light); flex-shrink: 0; }
     details[open] summary::before { transform: rotate(90deg); }
-    details summary .section-score { margin-left: auto; font-size: 0.8rem; font-weight: 600; color: var(--primary-light); }
+    details summary .section-score { margin-left: auto; font-size: 0.8rem; font-weight: 600; color: var(--primary-light); flex-shrink: 0; }
     .section-body { padding: 4px 18px 18px; }
     .section-desc { font-size: 0.82rem; color: var(--text-light); margin: 4px 0 10px; }
+
+    /* ── Category summary with embedded bar ── */
+    .cat-summary { gap: 12px; background: var(--primary) !important; color: white; border-radius: 8px; }
+    .cat-summary::before { color: rgba(255,255,255,0.7) !important; }
+    .cat-summary .section-score { color: rgba(255,255,255,0.85) !important; }
+    .cat-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.25); border-radius: 4px; overflow: hidden; min-width: 60px; max-width: 200px; }
+    .cat-bar-track .score-bar-fill { height: 100%; background: rgba(255,255,255,0.8); }
 
     /* ── Intake form ── */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
@@ -107,6 +146,12 @@
     }
     .form-section-header:first-child { padding-top: 4px; }
     .field-hint { font-size: 0.74rem; color: var(--text-light); margin-top: 5px; line-height: 1.55; }
+    .dl-template-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: white; border: 1.5px solid var(--primary); border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: var(--primary); text-decoration: none; flex-shrink: 0; transition: background 0.15s; }
+    .dl-template-btn:hover { background: var(--primary); color: white; }
+    .wanted-docs-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .wanted-doc-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; background: #f5f9f6; border: 1px solid var(--border); border-radius: 6px; font-size: 0.83rem; cursor: pointer; }
+    .wanted-doc-item input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; accent-color: var(--primary); }
+    .wanted-doc-item:has(input:checked) { background: #eef5f0; border-color: var(--accent); }
     .resources-card { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
     .resource-item {
       display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px;
@@ -240,6 +285,7 @@
     .method-section { margin-bottom: 28px; }
     .method-section h2 { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
     .method-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
+    .card-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 7px; margin-bottom: 14px; }
     .callout { background: #e8f5ee; border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 0.875rem; color: var(--text); margin-bottom: 16px; }
     .step-list { list-style: none; padding: 0; }
     .step-list li { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #eef2ef; font-size: 0.875rem; }
@@ -247,6 +293,51 @@
     .step-num { flex-shrink: 0; width: 28px; height: 28px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; }
     .step-body strong { display: block; font-weight: 600; margin-bottom: 2px; }
     .step-body span { color: var(--text-light); }
+
+    /* ── Process flow (Overview) ── */
+    .process-flow { display: flex; align-items: flex-start; gap: 0; margin: 16px 0 8px; }
+    .process-step { flex: 1; text-align: center; position: relative; }
+    .process-step:not(:last-child)::after { content: '→'; position: absolute; right: -10px; top: 16px; color: var(--border); font-size: 1.2rem; }
+    .process-circle { width: 38px; height: 38px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; opacity: 0.5; transition: opacity 0.15s, box-shadow 0.15s; }
+    .process-step:hover .process-circle { opacity: 1; box-shadow: 0 0 0 3px rgba(30,64,175,0.15); }
+    .process-circle-active { opacity: 1 !important; box-shadow: 0 0 0 3px rgba(30,64,175,0.2); }
+    .process-label { font-size: 0.72rem; font-weight: 600; color: var(--primary); line-height: 1.3; }
+    .process-sub { font-size: 0.65rem; color: var(--text-light); margin-top: 3px; }
+
+    /* ── Phase tags (CE) ── */
+
+    /* ── Metric cards (Assessment tab) ── */
+    .scoring-category { margin-bottom: 24px; }
+    .scoring-cat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding: 14px 18px; background: var(--primary); color: white; border-radius: 8px; }
+    .scoring-cat-title { font-size: 0.95rem; font-weight: 700; }
+    .scoring-cat-score { font-size: 1.3rem; font-weight: 800; }
+    .scoring-cat-max { font-size: 0.78rem; opacity: 0.7; }
+    .score-progress-track { height: 6px; background: rgba(255,255,255,0.3); border-radius: 3px; flex: 1; margin: 0 16px; overflow: hidden; }
+    .score-progress-fill { height: 100%; background: #4ade80; border-radius: 3px; transition: width 0.3s; }
+    .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 10px; transition: border-color 0.15s; }
+    .metric-card:hover { border-color: var(--accent); }
+    .metric-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
+    .metric-card-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+    .metric-card-desc { font-size: 0.75rem; color: var(--text-light); margin-top: 3px; line-height: 1.4; }
+    .metric-evidence { display: inline-flex; align-items: center; gap: 6px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: #0369a1; margin-top: 6px; }
+    .score-selector { display: flex; gap: 4px; flex-shrink: 0; }
+    .score-selector .score-btn { width: 36px; height: 36px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--bg); font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-light); display: flex; align-items: center; justify-content: center; transition: all 0.12s; }
+    .score-selector .score-btn:hover { border-color: var(--accent); color: var(--primary); }
+    .score-selector .score-btn.active.sc-0 { background: #9ca3af; color: #fff; border-color: #9ca3af; }
+    .score-selector .score-btn.active.sc-1, .score-selector .score-btn.active.sc-2 { background: #dc2626; color: #fff; border-color: #dc2626; }
+    .score-selector .score-btn.active.sc-3 { background: #d97706; color: #fff; border-color: #d97706; }
+    .score-selector .score-btn.active.sc-4, .score-selector .score-btn.active.sc-5 { background: #16a34a; color: #fff; border-color: #16a34a; }
+    .metric-notes-input { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; resize: none; min-height: 44px; margin-top: 8px; }
+
+    /* ── Conclusions — rank badges & score pills ── */
+    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; font-size: 0.82rem; }
+    .rank-1 { background: #fef9c3; color: #854d0e; }
+    .rank-2 { background: #f0f5f2; color: var(--primary); }
+    .rank-3 { background: #f9fafb; color: #6b7280; }
+    .score-pill-high { background: #dcfce7; color: #14532d; padding: 3px 10px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; }
+    .score-pill-mid  { background: #fef9c3; color: #854d0e; padding: 3px 10px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; }
+    .score-pill-low  { background: #fee2e2; color: #991b1b; padding: 3px 10px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; }
+    .recommendation-box { background: #f0fdf4; border: 2px solid #86efac; border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; }
 
     /* ── Site sub-tabs (inside Compare) ── */
     .site-subtabs-bar {
@@ -271,36 +362,46 @@
     .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
     /* ── Inner tab segmented control (Intake / Walkthrough / Scoring) ── */
+    /* ── Inner tab stepper ── */
     .inner-tabs-bar {
-      display: inline-flex; gap: 3px; background: #eef3f0; border-radius: 9px;
-      padding: 4px; margin-bottom: 22px;
+      display: flex; align-items: center; gap: 0;
+      border-bottom: 2px solid var(--border); margin-bottom: 22px;
     }
     .inner-tab-btn {
-      padding: 7px 18px; border: none; border-radius: 6px; cursor: pointer;
-      font-size: 0.82rem; font-weight: 500; color: var(--text-light);
-      background: transparent; transition: all 0.15s; white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
+      padding: 11px 20px; border: none; background: none; cursor: pointer;
+      font-size: 0.83rem; font-weight: 500; color: var(--text-light);
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: all 0.15s; white-space: nowrap; position: relative;
     }
-    .inner-tab-btn:hover { color: var(--primary); background: rgba(255,255,255,0.6); }
-    .inner-tab-btn.active {
-      background: white; color: var(--primary); font-weight: 600;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    .inner-tab-btn:hover { color: var(--primary); }
+    .inner-tab-btn.active { color: var(--primary); font-weight: 700; border-bottom-color: var(--accent); }
+
+    /* Step number badge */
+    .step-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; border-radius: 50%;
+      font-size: 0.65rem; font-weight: 700; flex-shrink: 0;
+      background: var(--border); color: var(--text-light);
+      transition: background 0.15s, color 0.15s;
     }
+    .inner-tab-btn.active .step-badge { background: var(--primary); color: white; }
+
+    /* Completion dot */
+    .step-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #d1d5db; flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .step-dot.started  { background: #f59e0b; }
+    .step-dot.done     { background: #16a34a; }
+
     .inner-content { display: none; }
     .inner-content.active { display: block; }
+    .inner-tab-desc { font-size: 0.82rem; color: var(--text-light); line-height: 1.6; margin: 0 0 18px; padding: 10px 14px; background: #f8fafc; border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
 
     /* ── Energy Load ── */
     .el-section-note { font-size: 0.78rem; color: var(--text-light); margin-bottom: 14px; line-height: 1.5; }
-    .load-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    .load-table th {
-      text-align: left; padding: 8px 12px; font-size: 0.72rem; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light);
-      background: #f0f5f2; border-bottom: 1px solid var(--border);
-    }
-    .load-table th.center, .load-table td.center { text-align: center; }
-    .load-table td { padding: 8px 12px; border-bottom: 1px solid #edf2ef; font-size: 0.875rem; vertical-align: middle; }
-    .load-table tr:last-child td { border-bottom: none; }
-    .load-table input[type="text"] { width: 90px; }
-    .load-table input[type="checkbox"] { accent-color: var(--primary); width: 15px; height: 15px; cursor: pointer; }
     .el-tag {
       display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.68rem;
       font-weight: 600; background: #e8f5ee; color: var(--primary); margin-left: 8px; vertical-align: middle;
@@ -326,6 +427,7 @@
     .wt-field:last-child { border-bottom: none; }
     /* label on top, hint below it, textarea full width */
     .wt-field-label { font-weight: 600; font-size: 0.875rem; color: var(--text); display: block; margin-bottom: 5px; }
+    .wt-photo-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; border-radius: 4px; padding: 1px 6px; margin-left: 7px; vertical-align: middle; }
     .wt-hint-details { display: block; background: none; border: none; border-radius: 0; margin: 0 0 7px; overflow: visible; width: 100%; }
     .wt-hint-details > summary {
       list-style: none; display: inline-flex; align-items: center; gap: 4px;
@@ -341,11 +443,12 @@
       border-radius: 6px; border: 1px solid var(--border);
       font-size: 0.78rem; color: var(--text-light); line-height: 1.55; width: 100%;
     }
-    .wt-hint-body ul { padding-left: 16px; margin: 0; }
-    .wt-hint-body li { margin-bottom: 3px; }
+    .wt-hint-body ul { columns: 2; column-gap: 24px; padding-left: 16px; margin: 0; }
+    .wt-hint-body li { margin-bottom: 4px; break-inside: avoid; }
     /* full-width textarea inside walkthrough */
     .wt-field textarea { width: 100%; box-sizing: border-box; }
     .wt-section-body { padding: 4px 18px 14px; }
+    .wt-section-desc { font-size: 0.82rem; color: var(--text-light); line-height: 1.6; margin: 10px 0 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
     .wt-task-item {
       display: flex; align-items: center; gap: 10px; padding: 9px 12px;
       background: #f5f9f6; border-radius: 6px; margin-bottom: 6px;
@@ -366,7 +469,8 @@
     /* ── Auth overlays ── */
     .auth-overlay {
       position: fixed; inset: 0; z-index: 1000;
-      display: flex; align-items: center; justify-content: center;
+      display: none !important;
+      align-items: center; justify-content: center;
       background: var(--bg);
     }
     .auth-card {
@@ -446,95 +550,87 @@
 
 <div class="main">
   <div class="tabs-bar" id="tabsBar">
-    <button class="tab-btn active" id="tab-btn-home" onclick="showTab('home')">Overview</button>
-    <button class="tab-btn" id="tab-btn-methodology" onclick="showTab('methodology')">Siting Methodology</button>
-    <button class="tab-btn" id="tab-btn-compare" onclick="showTab('compare')">Sites</button>
-    <button class="tab-btn" id="tab-btn-engagement" onclick="showTab('engagement');refreshEngagementTab();">Community Engagement</button>
+    <button class="tab-btn active" id="tab-btn-overview" onclick="showTab('overview')"><span class="phase-num">1</span>Project Overview</button>
+    <button class="tab-btn" id="tab-btn-engagement" onclick="showTab('engagement');refreshEngagementTab();"><span class="phase-num">2</span>Community Engagement</button>
+    <button class="tab-btn" id="tab-btn-compare" onclick="showTab('compare')"><span class="phase-num">3</span>Site Assessment</button>
+    <button class="tab-btn" id="tab-btn-conclusions" onclick="showTab('conclusions');refreshConclusionsRankings();"><span class="phase-num">4</span>Conclusions</button>
   </div>
 
-  <!-- ── OVERVIEW TAB ── -->
-  <div id="tab-home" class="tab-content active">
+  <!-- ── PROJECT OVERVIEW TAB ── -->
+  <div id="tab-overview" class="tab-content active">
     <div class="method-section">
-      <div class="method-card" style="margin-bottom:20px;">
-        <p style="font-size:0.95rem;line-height:1.7;">
-          This toolkit provides a standardized, auditable framework for comparing candidate resilience hub sites across physical resilience, energy systems, community alignment, and financial viability. It is designed to support decision-making by community partners, planners, and technical teams evaluating which buildings are best suited to serve as resilience hubs during climate emergencies, power outages, and other disruptions.
+
+      <!-- Definition -->
+      <div class="method-card" style="margin-bottom:20px;border-left:4px solid var(--primary);">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--primary);margin-bottom:10px;">What is a Resilience Hub?</div>
+        <p style="font-size:0.9rem;line-height:1.7;color:var(--text);margin:0 0 10px;">
+          A <strong>resilience hub</strong> is a trusted community facility — a church, community center, school, or similar space — retrofitted to serve as a refuge and resource center before, during, and after climate-related disasters.
         </p>
-        <p style="font-size:0.875rem;color:var(--text-light);margin-top:10px;">
-          Use the <strong>Sites</strong> tab to score and compare candidate sites. Use the <strong>Siting Methodology</strong> tab for guidance on data collection approaches by category.
+        <p style="font-size:0.85rem;line-height:1.7;color:var(--text-light);margin:0;">
+          During an emergency, hubs provide cooling or warming, phone charging, water, food, and information to residents who need them most. Between emergencies, they continue their regular community function. The goal of this toolkit is to assess which candidate sites are most <em>feasible</em> and <em>impactful</em> as resilience hubs — accounting for physical condition, community trust, energy upgrade potential, and financial viability.
         </p>
       </div>
-      <h2>How to Use This Toolkit</h2>
-      <ul class="step-list">
-        <li>
-          <div class="step-num">1</div>
-          <div class="step-body"><strong>Identify Candidate Sites</strong><span>Compile a list of candidate buildings through partner networks, community input, and local knowledge. Document baseline site information using the Site Intake form.</span></div>
-        </li>
-        <li>
-          <div class="step-num">2</div>
-          <div class="step-body"><strong>Collect Data</strong><span>Conduct site walkthroughs, community engagement, and desk-based research in parallel. Use the Siting Methodology tab for guidance on what to collect for each scoring category.</span></div>
-        </li>
-        <li>
-          <div class="step-num">3</div>
-          <div class="step-body"><strong>Score Each Site</strong><span>Enter scores in the Site Assessment tool using the standardized 0&ndash;5 scale. All scores should be traceable to a documented data source or observation.</span></div>
-        </li>
-        <li>
-          <div class="step-num">4</div>
-          <div class="step-body"><strong>Compare Results</strong><span>Review the Sites table to evaluate sites across all four categories. Note red flags that may override composite scores.</span></div>
-        </li>
-        <li>
-          <div class="step-num">5</div>
-          <div class="step-body"><strong>Identify Top Candidates</strong><span>Use composite scores, category breakdowns, and red flag status to recommend sites for next-stage engineering, financial, and stakeholder review.</span></div>
-        </li>
-      </ul>
-    </div>
-  </div>
 
-  <!-- ── METHODOLOGY TAB ── -->
-  <div id="tab-methodology" class="tab-content">
-    <div class="method-section">
-      <p style="font-size:0.875rem;color:var(--text-light);margin-bottom:20px;">
-        Guidance on recommended data collection approaches for each scoring category. This page will be updated as the team develops and validates methodology.
-      </p>
-      <details open>
-        <summary>Physical Resilience</summary>
-        <div class="section-body" style="padding-top:12px;">
-          <ul style="font-size:0.875rem;padding-left:20px;line-height:2;">
-            <li>PropertyShark or county assessor &mdash; ownership, building age, permits</li>
-            <li>Site walkthroughs with a licensed contractor</li>
-            <li>Establish a contractor relationship early for consistent assessments across sites</li>
-          </ul>
+      <!-- Project Context -->
+      <div class="method-card" style="margin-bottom:20px;">
+        <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--primary);margin-bottom:12px;">Project Context</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+          <div>
+            <label class="field-label">Project Name</label>
+            <input type="text" id="proj-name" class="intake-input" placeholder="e.g. East Palo Alto Resilience Hubs" oninput="setProjectContext('name', this.value)" />
+          </div>
+          <div>
+            <label class="field-label">Community / Geography</label>
+            <input type="text" id="proj-community" class="intake-input" placeholder="e.g. East Palo Alto, CA" oninput="setProjectContext('community', this.value)" />
+          </div>
+          <div>
+            <label class="field-label">Project Lead</label>
+            <input type="text" id="proj-lead" class="intake-input" placeholder="Name or organization" oninput="setProjectContext('lead', this.value)" />
+          </div>
+          <div>
+            <label class="field-label">Start Date</label>
+            <input type="text" id="proj-startDate" class="intake-input" placeholder="MM/YYYY" oninput="setProjectContext('startDate', this.value)" />
+          </div>
+          <div>
+            <label class="field-label">Target Decision Date</label>
+            <input type="text" id="proj-decisionDate" class="intake-input" placeholder="MM/YYYY" oninput="setProjectContext('decisionDate', this.value)" />
+          </div>
+          <div>
+            <label class="field-label">Funding / Program</label>
+            <input type="text" id="proj-funding" class="intake-input" placeholder="e.g. BRIC, CDBG-DR" oninput="setProjectContext('funding', this.value)" />
+          </div>
         </div>
-      </details>
-      <details>
-        <summary>Community Alignment</summary>
-        <div class="section-body" style="padding-top:12px;">
-          <ul style="font-size:0.875rem;padding-left:20px;line-height:2;">
-            <li>Resident interviews and focus groups</li>
-            <li>Outreach through local community organizations</li>
-            <li>Conversations with community leaders and trusted intermediaries</li>
-          </ul>
+      </div>
+
+      <!-- Process Overview (clickable nav) -->
+      <div class="method-card" style="margin-bottom:20px;">
+        <div class="card-title">Process Overview</div>
+        <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:14px;line-height:1.6;">This toolkit follows a five-phase process. Community engagement comes first — sites emerge from listening, not the other way around. Click any step to navigate.</p>
+        <div class="process-flow">
+          <div class="process-step" onclick="showTab('engagement');refreshEngagementTab();" style="cursor:pointer;">
+            <div class="process-circle">1</div>
+            <div class="process-label">Community Discovery</div>
+            <div class="process-sub">Listen, learn priorities</div>
+          </div>
+          <div class="process-step" onclick="showTab('compare');" style="cursor:pointer;">
+            <div class="process-circle">2</div>
+            <div class="process-label">Site Assessment</div>
+            <div class="process-sub">Walkthroughs, scoring</div>
+          </div>
+          <div class="process-step" onclick="showTab('engagement');refreshEngagementTab();" style="cursor:pointer;">
+            <div class="process-circle">3</div>
+            <div class="process-label">Community Reflection</div>
+            <div class="process-sub">Bring findings back</div>
+          </div>
+          <div class="process-step" onclick="showTab('conclusions');refreshConclusionsRankings();" style="cursor:pointer;">
+            <div class="process-circle">4</div>
+            <div class="process-label">Conclusions</div>
+            <div class="process-sub">Recommend, decide</div>
+          </div>
         </div>
-      </details>
-      <details>
-        <summary>Energy Systems</summary>
-        <div class="section-body" style="padding-top:12px;">
-          <ul style="font-size:0.875rem;padding-left:20px;line-height:2;">
-            <li>Engage local Community Choice Aggregator (e.g. Peninsula Clean Energy)</li>
-            <li>Document existing electrical infrastructure during site walkthrough</li>
-            <li>Use reasonable assumptions where metered data is unavailable</li>
-          </ul>
-        </div>
-      </details>
-      <details>
-        <summary>Financial Viability</summary>
-        <div class="section-body" style="padding-top:12px;">
-          <ul style="font-size:0.875rem;padding-left:20px;line-height:2;">
-            <li>Identify key costs from Physical Resilience and Energy Systems assessments</li>
-            <li>Apply a financial modeling tool to estimate upgrade and operating costs</li>
-            <li>Cross-reference with available funding programs and grant eligibility</li>
-          </ul>
-        </div>
-      </details>
+      </div>
+
+
     </div>
   </div>
 
@@ -566,6 +662,78 @@
   <div id="tab-engagement" class="tab-content">
     <div class="comparison-section">
       <div id="ce-active-content"></div>
+    </div>
+  </div>
+
+  <!-- ── CONCLUSIONS TAB ── -->
+  <div id="tab-conclusions" class="tab-content">
+    <div class="method-section">
+
+      <!-- Recommendation box -->
+      <div class="recommendation-box" style="margin-bottom:20px;">
+        <h3 style="color:var(--primary);font-size:1rem;margin-bottom:14px;">📍 Recommended Site</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr 2fr;gap:16px;align-items:start;">
+          <div>
+            <label class="field-label">Recommended Site</label>
+            <select id="conc-recommended-site" class="intake-input" onchange="setConclusion('recommendedSite', this.value)">
+              <option value="">— Select site —</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Decision Status</label>
+            <select id="conc-decision-status" class="intake-input" onchange="setConclusion('decisionStatus', this.value)">
+              <option value="">— Select —</option>
+              <option value="Draft">Draft</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Approved">Approved</option>
+              <option value="On Hold">On Hold</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Recommendation Rationale</label>
+            <textarea id="conc-rationale" class="intake-input" rows="3" placeholder="Why is this site recommended? Key strengths, trade-offs, community input considered…" oninput="setConclusion('rationale', this.value)" style="resize:vertical;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Site Rankings -->
+      <div class="method-card" style="margin-bottom:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div class="card-title" style="margin-bottom:0;border:none;padding:0;">Site Rankings</div>
+          <button class="add-site-btn no-print" style="font-size:0.75rem;padding:4px 10px;" onclick="refreshConclusionsRankings()">↻ Refresh</button>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
+          <thead>
+            <tr style="background:#f0f5f2;">
+              <th style="text-align:left;padding:8px 12px;color:var(--text-light);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid var(--border);">Rank</th>
+              <th style="text-align:left;padding:8px 12px;color:var(--text-light);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid var(--border);">Site Name</th>
+              <th style="text-align:center;padding:8px 12px;color:var(--text-light);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid var(--border);">Physical</th>
+              <th style="text-align:center;padding:8px 12px;color:var(--text-light);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid var(--border);">Community</th>
+              <th style="text-align:center;padding:8px 12px;color:var(--text-light);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid var(--border);">Energy</th>
+              <th style="text-align:center;padding:8px 12px;color:var(--text-light);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid var(--border);">Financial</th>
+              <th style="text-align:center;padding:8px 12px;color:var(--text-light);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid var(--border);">Total</th>
+              <th style="text-align:center;padding:8px 12px;color:var(--text-light);font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid var(--border);">Status</th>
+            </tr>
+          </thead>
+          <tbody id="conclusions-rankings-body">
+            <tr><td colspan="8" style="padding:16px;text-align:center;color:var(--text-light);font-size:0.82rem;">Add sites and scores to see rankings.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Decision Factors & Next Steps -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div class="method-card">
+          <div class="card-title">Key Decision Factors</div>
+          <textarea id="conc-factors" class="intake-input" rows="6" placeholder="List major factors that influenced the recommendation (strengths, trade-offs, risks)…" oninput="setConclusion('factors', this.value)" style="resize:vertical;width:100%;"></textarea>
+        </div>
+        <div class="method-card">
+          <div class="card-title">Next Steps</div>
+          <div id="next-steps-list" style="margin-bottom:8px;"></div>
+          <button class="add-site-btn no-print" style="font-size:0.78rem;" onclick="addNextStep()">+ Add Step</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -678,135 +846,275 @@
     'Excellent / highly suitable',
   ];
 
-  const CRITICAL_LOADS = [
-    { key: 'hvac',           label: 'HVAC / Heating' },
-    { key: 'cooling',        label: 'Cooling / A/C' },
-    { key: 'lighting',       label: 'Lighting' },
-    { key: 'refrigeration',  label: 'Refrigeration / Freezer' },
-    { key: 'medical',        label: 'Medical Equipment' },
-    { key: 'communications', label: 'Communications / IT' },
-    { key: 'waterHeating',   label: 'Water Heating' },
-    { key: 'cooking',        label: 'Cooking / Kitchen' },
-    { key: 'evCharging',     label: 'EV Charging' },
-  ];
-
   let sites = [];
   let siteCounter = 0;
 
+  /* ── Project-level state ── */
+  let projectContext = { name: '', community: '', lead: '', startDate: '', decisionDate: '', funding: '' };
+  let projectConclusions = { recommendedSite: '', decisionStatus: '', rationale: '', factors: '', nextSteps: [] };
+
+  /* ── Project Context helpers ── */
+  function setProjectContext(field, value) {
+    projectContext[field] = value;
+  }
+  function restoreProjectContext() {
+    const f = projectContext;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+    set('proj-name', f.name);
+    set('proj-community', f.community);
+    set('proj-lead', f.lead);
+    set('proj-startDate', f.startDate);
+    set('proj-decisionDate', f.decisionDate);
+    set('proj-funding', f.funding);
+  }
+
+  /* ── Site status helpers ── */
+  function setSiteStatus(id, value) {
+    const site = sites.find(s => s.id === id);
+    if (site) site.status = value;
+  }
+  function restoreSiteStatus(id) {
+    const site = sites.find(s => s.id === id);
+    if (!site) return;
+    const el = document.getElementById('site-status-' + id);
+    if (el) el.value = site.status || 'Active';
+  }
+
+  /* ── CE extra fields (takeaways, partners, phase filter) ── */
+  let ceTakeaways = '';
+  let cePartners = '';
+  let ceSort = { col: 'date', dir: 1 }; // col: 'phase'|'date'|'type'|'status', dir: 1=asc/-1=desc
+
+  function setCETakeaways(v) { ceTakeaways = v; }
+  function setCEPartners(v)  { cePartners = v; }
+
+  function setCESort(col) {
+    if (ceSort.col === col) ceSort.dir *= -1;
+    else { ceSort.col = col; ceSort.dir = 1; }
+    renderEngagementEvents();
+  }
+
+  /* ── Conclusions helpers ── */
+  function setConclusion(field, value) {
+    projectConclusions[field] = value;
+  }
+  function restoreConclusions() {
+    const c = projectConclusions;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+    set('conc-rationale', c.rationale);
+    set('conc-factors', c.factors);
+    set('conc-decision-status', c.decisionStatus);
+    // Recommended site dropdown populated in refreshConclusionsRankings
+    renderNextSteps();
+  }
+
+  function refreshConclusionsRankings() {
+    // Populate recommended-site dropdown
+    const sel = document.getElementById('conc-recommended-site');
+    if (sel) {
+      const prev = sel.value;
+      sel.innerHTML = '<option value="">— Select site —</option>';
+      sites.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.name;
+        opt.textContent = s.name || '(unnamed)';
+        sel.appendChild(opt);
+      });
+      sel.value = projectConclusions.recommendedSite || prev;
+    }
+
+    // Build rankings table
+    const tbody = document.getElementById('conclusions-rankings-body');
+    if (!tbody) return;
+    if (sites.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="padding:16px;text-align:center;color:var(--text-light);font-size:0.82rem;">Add sites and scores to see rankings.</td></tr>';
+      return;
+    }
+
+    const catMax = { physical: 25, community: 25, energy: 25, financial: 15 };
+    const rows = sites.map(s => {
+      const sc = s.scores || {};
+      const catScore = cat => Object.values(sc[cat] || {}).reduce((a, b) => a + (Number(b) || 0), 0);
+      const phys = catScore('physical');
+      const comm = catScore('community');
+      const ener = catScore('energy');
+      const fin  = catScore('financial');
+      const total = phys + comm + ener + fin;
+      return { name: s.name || '(unnamed)', phys, comm, ener, fin, total, status: s.status || 'Active' };
+    }).sort((a, b) => b.total - a.total);
+
+    const statusColors = { Recommended: '#15803d', Active: '#1a56db', 'Under Review': '#92400e', 'Further Review': '#6b21a8', Eliminated: '#991b1b' };
+    const rankClass = i => i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : 'rank-3';
+    const pillClass = v => v >= 18 ? 'score-pill-high' : v >= 10 ? 'score-pill-mid' : 'score-pill-low';
+    tbody.innerHTML = rows.map((r, i) => `
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:10px 12px;"><span class="rank-badge ${rankClass(i)}">${i + 1}</span></td>
+        <td style="padding:10px 12px;font-weight:600;">${r.name}</td>
+        <td style="padding:10px 12px;text-align:center;"><span class="${pillClass(r.phys)}">${r.phys}</span></td>
+        <td style="padding:10px 12px;text-align:center;"><span class="${pillClass(r.comm)}">${r.comm}</span></td>
+        <td style="padding:10px 12px;text-align:center;"><span class="${pillClass(r.ener)}">${r.ener}</span></td>
+        <td style="padding:10px 12px;text-align:center;"><span class="${pillClass(r.fin)}">${r.fin}</span></td>
+        <td style="padding:10px 12px;text-align:center;"><span class="${r.total >= 60 ? 'score-pill-high' : r.total >= 40 ? 'score-pill-mid' : 'score-pill-low'}">${r.total} / 90</span></td>
+        <td style="padding:10px 12px;text-align:center;">
+          <span style="font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:10px;
+            background:${statusColors[r.status] || '#374151'}22;
+            color:${statusColors[r.status] || '#374151'};">${r.status}</span>
+        </td>
+      </tr>`).join('');
+  }
+
+  function addNextStep() {
+    projectConclusions.nextSteps.push('');
+    renderNextSteps();
+  }
+  function removeNextStep(i) {
+    projectConclusions.nextSteps.splice(i, 1);
+    renderNextSteps();
+  }
+  function setNextStep(i, value) {
+    projectConclusions.nextSteps[i] = value;
+  }
+  function renderNextSteps() {
+    const el = document.getElementById('next-steps-list');
+    if (!el) return;
+    if (projectConclusions.nextSteps.length === 0) {
+      el.innerHTML = '<div style="font-size:0.82rem;color:var(--text-light);">No next steps yet.</div>';
+      return;
+    }
+    el.innerHTML = projectConclusions.nextSteps.map((step, i) => `
+      <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+        <span style="font-size:0.8rem;color:var(--text-light);min-width:18px;">${i + 1}.</span>
+        <input type="text" class="intake-input" style="flex:1;font-size:0.83rem;"
+          value="${esc(step)}" oninput="setNextStep(${i}, this.value)"
+          placeholder="Describe next step…" />
+        <button class="btn btn-danger btn-sm no-print" style="padding:2px 7px;font-size:0.75rem;"
+          onclick="removeNextStep(${i})">✕</button>
+      </div>`).join('');
+  }
+
   /* ── Walkthrough data ── */
   const WALKTHROUGH_SECTIONS = [
-    { key: 'structure', label: 'Structure', fields: [
-      { key: 'constructionType', label: 'Construction / Building Type',
-        hints: ['Rate on 1–5 scale', 'Note framing type: balloon, platform, timber, etc.', 'Balloon framing may have fire code concerns', 'Document if multiple types are present'] },
-      { key: 'windows', label: 'Windows',
-        hints: ['Style and brand', 'Age', 'Average number of panes', 'Sealing condition (infiltration)', 'Performance rating (newer windows)', 'Framing material', 'Opening mechanism: casement, crank-out, sash'] },
-      { key: 'framing', label: 'Framing + Subframing',
-        hints: ['Spacing', 'Material', 'Signs of rot, woodworm, or termites', 'Drywall condition'] },
-      { key: 'insulation', label: 'Insulation',
-        hints: ['Type', 'R-Value', 'Thickness (inches)', 'Thermal imaging estimate (where and how much)', 'Can insulation be added?', 'Holes or voids — check for infiltration'] },
-      { key: 'atticCrawl', label: 'Attic + Crawl Space',
-        hints: ['Access point available?', 'Opening size (for equipment sizing)', 'Foundation type', 'Clearance: 18" crawlspace min, 24" attic min', 'Condition of attic/rafters', 'Are duct or wiring changes feasible?'] },
-      { key: 'asbestos', label: 'Asbestos',
-        hints: ['Present?', 'How much?', 'Condition', 'Cast-like appearance on ducts is a common sign'] },
-      { key: 'lead', label: 'Lead',
-        hints: ['Use testing kits', 'Building age is a key risk indicator', 'Take samples if suspected'] },
-      { key: 'roof', label: 'Roof',
-        hints: ['Style', 'Damage: leaks, broken tiles', 'Age and any remodels', 'Insulation', 'Size and structural suitability for solar', 'Materials and quality', 'Take pictures'] },
-      { key: 'sqft', label: 'Square Footage',
-        hints: ['Verify via PropertyShark', 'Or use floor plan', 'Or Cubi Casa app', 'Ensure accuracy before recording'] },
-      { key: 'importanceFactor', label: 'Importance Factor (Structural Integrity)',
-        hints: ['1.0 = Homes', '1.25 = Schools / Publicly owned buildings', '1.5 = Hospitals / Fire stations', 'Check cover sheet of structural drawings if available', 'Note Hayward Score if available', 'Is bracing necessary?'] },
-      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
-    ]},
-    { key: 'electrical', label: 'Electrical', fields: [
-      { key: 'panel', label: 'Electrical Panel',
-        hints: ['Take photos', 'Panel type: fuse vs. breaker', 'Panel capacity (100A?)', 'Up to code?', 'Breakers: open slots, sizes (quads/doubles/singles), count', 'Clearance to main gas/water lines (3 ft minimum)', 'Wiring type: knob-and-tube or other', 'Wire gauge', 'Main line connection type', 'Service line: underground or overhead', 'Electricity provider', 'Transformer capacity (contact provider)'] },
-      { key: 'voltageCurrent', label: 'Voltage & Current',
-        hints: ['240V available?', 'Upgrade required? (get transformer info)', 'Potential to upgrade to 200A?'] },
-      { key: 'largeAppliances', label: 'Large Appliances',
-        hints: ['List all: water heating, space heating, cooking equipment, lighting type', 'Note inputs and outputs', 'What needs to be added for retrofit?', 'Test load from appliances without a nameplate'] },
+    { key: 'electrical', label: 'Electrical',
+      desc: 'Assess the panel, wiring, and load capacity to understand upgrade complexity and readiness for electrification. This is often the most critical and costly dimension of a retrofit.',
+      fields: [
+      { key: 'panel', label: 'Electrical Panel', photo: true,
+        hints: ['Panel type: fuse vs. breaker', 'Panel capacity: 100 or 200 amp', 'Panel code compliance', 'Number of open breakers; sizes (singles, doubles, quads)', 'Panel distance to main gas and water line (3 ft min in CA)', 'Wiring type: knob, tube, or other', 'Wire gauge', 'Main line connection type', 'Service line: underground or overhead', 'Electricity provider', 'Likelihood of triggering a transformer upgrade', 'Presence of backup power (battery/diesel)', 'Get a winter and summer bill from property managers'] },
+      { key: 'largeAppliances', label: 'Large Appliance Plug Load', photo: true,
+        hints: ['List appliances: water heating, space heating, cooking equipment, computers, etc.', 'Default electricity rating for each', 'Test load for appliances without a nameplate capacity visible', 'Availability of 240V outlets and location', 'Appliances using 240V'] },
+      { key: 'lighting', label: 'Lighting',
+        hints: ['LED vs. fluorescent', 'Lighting differences between rooms'] },
       { key: 'loadCalc', label: 'Load Calculation',
-        hints: ['Use NEC 220.83 or 220.87 — choose whichever avoids panel upgrade', 'Compare to reference calculations', 'Test load from unlabeled appliances'] },
+        hints: ['Calculate with NEC 220.83 or 220.87 (best to avoid panel upgrade)', 'Conduct contractor method'] },
       { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
     ]},
-    { key: 'healthRisks', label: 'Health Risks', fields: [
-      { key: 'asbestos', label: 'Asbestos',
-        hints: ['Present?', 'How much?', 'Condition', 'Look for cast-like appearance on ducts'] },
+    { key: 'structure', label: 'Structure',
+      desc: 'Document the physical condition of the building envelope — framing, insulation, roof, and materials. This informs retrofit feasibility, cost estimates, and structural safety.',
+      fields: [
+      { key: 'constructionType', label: 'Construction / Building Type',
+        hints: ['1–5 scale: 1=fire resistive, 2=non-combustible, 3=ordinary, 4=heavy timber, 5=wood framed', 'Mix of types?', 'Existence of balloon framing', 'Fire code non-compliance'] },
+      { key: 'windows', label: 'Windows',
+        hints: ['Rating, style, brand, age', 'Average number of panes', 'Sealing condition', 'Framing material', 'Opening mechanism: casement, crank out, sash', 'Window differences between rooms'] },
+      { key: 'framing', label: 'Framing + Subframing',
+        hints: ['Stud/rafter spacing', 'Material type', 'Rot, woodworm, or termites', 'Drywall condition'] },
+      { key: 'insulation', label: 'Wall Insulation',
+        hints: ['Type', 'R-Value', 'Thickness (inches)', 'Thermal imaging hotspots', 'Potential to add insulation', 'Presence of holes/voids (infiltration)'] },
+      { key: 'atticCrawl', label: 'Attic + Crawl Space',
+        hints: ['Accessibility', 'Size of opening (for equipment sizing)', 'Foundation type', 'Clearance: 18" crawlspace, 24" attic desired', 'General condition: poor / acceptable / excellent', 'Barriers to updating ducts or wiring'] },
+      { key: 'asbestos', label: 'Presence of Asbestos',
+        hints: ['Quantity', 'Condition of asbestos', 'Look for cast-like appearance on ducts'] },
+      { key: 'roof', label: 'Roof', photo: true,
+        hints: ['Style: flat, gable', 'Materials: concrete, metal shingles, etc.', 'Signs of damage: leaks, rot', 'Age and any remodels', 'Insulation (refer to wall insulation)', 'Size and structural assessment for solar', 'Quality of materials (brands)'] },
+      { key: 'sqft', label: 'Square Footage',
+        hints: ['Roughly estimate on-site', 'Compare to PropertyShark value', 'Or use floor plan / Cubi Casa (ensure correct)'] },
       { key: 'lead', label: 'Lead',
-        hints: ['Use testing kits', 'Building age is a risk indicator', 'Take samples if suspected'] },
-      { key: 'gasAppliances', label: 'Gas Appliances',
-        hints: ['Type and location', 'Spray and check for gas leaks', 'Proper outdoor ventilation?', 'Piping condition: decomposing or deteriorated?'] },
-      { key: 'carbonMonoxide', label: 'Carbon Monoxide Detectors',
-        hints: ['One on every floor?', 'One in all sleeping areas?', 'One near combustion appliances?'] },
-      { key: 'smokeAlarms', label: 'Smoke Alarms',
-        hints: ['One on every floor?', 'In kitchens, rooms, hallways, bathrooms, stairways', 'Other fire hazard areas covered?'] },
-      { key: 'fireExits', label: 'Fire Exits & Sprinklers',
-        hints: ['Number of exits?', 'Exit signs visible at night?', 'Number of sprinklers present?', 'Date of most recent sprinkler inspection?'] },
-      { key: 'mold', label: 'Mold',
-        hints: ['Visible mold or water damage?', 'Color of mold', 'Deteriorated material (water rot) present?'] },
+        hints: ['Testing kit result', 'Consider age of building', 'Defer to contractor if suspected'] },
       { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
     ]},
-    { key: 'plumbing', label: 'Plumbing', fields: [
+    { key: 'plumbing', label: 'Plumbing',
+      desc: 'Evaluate water heating, fixtures, and pipe condition. Key for understanding heat pump water heater retrofit potential and sanitation capacity during an emergency activation.',
+      fields: [
       { key: 'waterHeating', label: 'Water Heating System',
-        hints: ['Gas or electric?', 'Supply lines condition', 'Heater stand, stability, pan, drainage', 'Proper ventilation?', 'Location — can it be relocated?'] },
-      { key: 'leaksPipes', label: 'Leaks / Pipe Problems',
-        hints: ['Corrosion visible?', 'Gallons per minute', 'Flow rate at each faucet'] },
-      { key: 'showers', label: 'Showers & Water Fixtures',
-        hints: ['Number of showers', 'Space to add more if needed?', 'Number of faucets', 'Dishwasher and other water-using appliances'] },
+        hints: ['Type: gas vs. heat pump', 'System specification/rating', 'Inputs and outputs: water, gas, electricity, condensation drip', 'Supply line condition: gas/water leakage', 'Water heater stand, stability, pan, drainage, ventilation', 'Location (potential relocation)', 'Retrofit date if done', 'Barriers to future retrofit', 'CO detector present?'] },
+      { key: 'bathrooms', label: 'Bathrooms',
+        hints: ['Number of bathrooms', 'Number of toilets and urinals per bathroom', 'Type', 'Location of bathroom', 'Presence of non-gendered bathrooms'] },
+      { key: 'showers', label: 'Showers',
+        hints: ['Number of showers', 'Space to add a shower', 'Average use of showers'] },
       { key: 'laundry', label: 'Laundry',
-        hints: ['Washer present?', 'Dryer present? Gas or electric?'] },
-      { key: 'tapWater', label: 'Tap Water Quality',
-        hints: ['Water filter present?', 'Access during emergencies?', 'Water storage capacity?'] },
+        hints: ['Presence of washer and dryer', 'Type: front/side load, gas, heat pump, combination', 'System specification/rating', 'Inputs and outputs: water, gas, electricity, vent to ambient', 'Supply line condition', 'Ventilation', 'Location (potential relocation)', 'Retrofit date if done', 'Barriers to future retrofit', 'CO detector'] },
+      { key: 'leaksPipes', label: 'General Leaks & Pipe Concerns',
+        hints: ['Corrosion', 'Low/high faucet flow rate (gal/min)'] },
       { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
     ]},
-    { key: 'hvac', label: 'HVAC', fields: [
-      { key: 'heatCoolSystem', label: 'Heating & Cooling System',
-        hints: ['Age of system', 'Functionality per current users', 'Cooling capacity', 'BTU per square foot', 'Type: heat pump or other?'] },
-      { key: 'maxDuration', label: 'Max Duration at Full Capacity',
-        hints: ['Can it run 8+ hours continuously?', 'At what point will it fail or trip?'] },
+    { key: 'hvac', label: 'HVAC',
+      desc: 'Assess heating, cooling, and ventilation systems. Comfort during extreme heat or cold events is a core resilience function — note age, capacity, and whether the system can run continuously.',
+      fields: [
+      { key: 'heatCoolSystem', label: 'Heating and Cooling System', photo: true,
+        hints: ['Type and age', 'Cooling/heating capacity (BTU per square foot)', 'Efficiency / coefficient of performance', 'Functionality according to users', 'Maximum duration at full capacity (max rated run time)', 'Further system specification', 'CO detector'] },
       { key: 'ducts', label: 'Ducts',
-        hints: ['Ground or ceiling mounted?', 'Air filter condition?', 'Ductless system?', 'Asbestos in ducts?', 'Insulation, taping, sealing quality', 'Efficiency'] },
-      { key: 'efficiency', label: 'Efficiency / Coefficient of Performance',
-        hints: ['Find spec plate on HVAC unit', 'Take photos of specifications'] },
+        hints: ['Ductless?', 'Ground or ceiling mounted', 'Air filter type', 'Insulation', 'Asbestos in ducts', 'Taping and sealing', 'Efficiency and losses'] },
       { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
     ]},
-    { key: 'accessibility', label: 'Accessibility', fields: [
-      { key: 'tenants', label: 'Current Tenants / Occupancy',
-        hints: ['Do people currently use the space?', 'Do they feel comfortable there?'] },
+    { key: 'accessibility', label: 'Accessibility',
+      desc: 'Evaluate how easily community members — including those with disabilities — can reach and use the space. Parking, ramp access, and posted capacity all affect how effective the site can be as a hub.',
+      fields: [
       { key: 'ada', label: 'ADA Compliance',
-        hints: ['Staircases: condition and alternatives?', 'Ramps present?', 'Handicap parking available?'] },
-      { key: 'parking', label: 'Parking',
-        hints: ['Where is parking located?', 'Capacity?'] },
+        hints: ['Staircases code compliance', 'Ramps present', 'Elevator (if more than one story)'] },
       { key: 'buildingCapacity', label: 'Building Capacity',
-        hints: ['Capacity posted anywhere?', 'Fire marshal assessment available?', 'Large open space for sheltering or sleeping?'] },
+        hints: ['Number', 'Building capacity posting (fire marshal assessment)'] },
+      { key: 'parking', label: 'Parking',
+        hints: ['Location', 'Capacity: number of spaces, total area', 'Handicap parking spaces'] },
       { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
     ]},
-    { key: 'facilities', label: 'Facilities', fields: [
-      { key: 'health', label: 'Health Equipment',
-        hints: ['First aid kit?', 'AED (defibrillator)?', 'Freezer/refrigerator — capacity?', 'Ice storage?'] },
+    { key: 'facilities', label: 'Facilities / Services',
+      desc: 'Inventory the existing services and amenities that make a site useful as a community resilience hub — kitchen, communications, health equipment, and space for people to gather, rest, or shelter.',
+      fields: [
+      { key: 'health', label: 'Health',
+        hints: ['First aid kit', 'AED', 'Etc.'] },
+      { key: 'communications', label: 'Communication System',
+        hints: ['Phone', 'Internet', 'Fax', 'Etc.'] },
       { key: 'kitchen', label: 'Kitchen',
-        hints: ['Refrigeration capacity', 'Industrial cooking appliances?', 'Food storage space', 'Cooktop type'] },
-      { key: 'restrooms', label: 'Restrooms',
-        hints: ['Number of bathrooms', 'Gender-neutral options?', 'Shower space?', 'Number of toilets, urinals, sinks'] },
-      { key: 'overnightShelter', label: 'Overnight Shelter',
-        hints: ['Sleeping supplies available?', 'Open space to sleep?'] },
+        hints: ['Yes/no', 'Refrigeration capacity', 'Industrial cooking appliances', 'Stovetop type: electric, induction, gas', 'Food storage space', 'Dishwasher, ice machine', 'System specifications for each appliance', 'CO detector'] },
       { key: 'childCare', label: 'Child Care',
-        hints: ['Playground?', 'Dedicated play space?'] },
+        hints: ['Playground', 'Play space'] },
       { key: 'petCare', label: 'Pet Care',
-        hints: ['Outdoor space for pets?', 'Pet shelter available?'] },
+        hints: ['Outdoor space', 'Pet shelter'] },
       { key: 'recreation', label: 'Recreation',
-        hints: ['Pool table?', 'Ping pong?', 'Chess board?', 'Basketball hoop?'] },
+        hints: ['Pool table', 'Ping pong', 'Chess board', 'Basketball hoop'] },
+      { key: 'garden', label: 'Garden',
+        hints: ['Indoor/outdoor', 'Size'] },
+      { key: 'openStorage', label: 'Open / Storage Space',
+        hints: ['Total area', 'For storing equipment or to house people to sleep'] },
+      { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
+    ]},
+    { key: 'healthRisks', label: 'Health Risks',
+      desc: 'Check for safety hazards that could disqualify or complicate a site — mold, asbestos, lead, gas leaks, and missing life-safety systems like smoke alarms and CO detectors.',
+      fields: [
+      { key: 'carbonMonoxide', label: 'All Carbon Monoxide Detectors',
+        hints: ['Presence on every floor (y/n)', 'Presence in all sleeping areas (y/n)', 'Presence around combustion appliances (y/n)'] },
+      { key: 'smokeAlarms', label: 'Smoke Alarms',
+        hints: ['Presence on each floor (y/n)', 'Presence in all kitchens/rooms/hallways/bathrooms/stairways (y/n)', 'Fire hazard areas covered'] },
+      { key: 'fireExits', label: 'Fire Exits & Sprinklers',
+        hints: ['Number of exits', 'Visibility of exit signs in dark', 'Number of sprinklers present', 'Last sprinkler system inspection date'] },
+      { key: 'mold', label: 'Mold',
+        hints: ['Presence of visible mold or water damage', 'Color of mold', 'Presence of deteriorated material', 'Location/room'] },
+      { key: 'asbestosAll', label: 'All Presence of Asbestos',
+        hints: ['Locations', 'Quantity', 'Condition (check structure section above)'] },
+      { key: 'leadAll', label: 'All Lead',
+        hints: ['Testing kit result', 'Consider age of building', 'Defer to contractor (check structure section above)'] },
+      { key: 'gasAppliances', label: 'All Gas Appliances',
+        hints: ['Type and location (check above)', 'Outdoor ventilation', '☐ Spray and check for leaks'] },
       { key: 'standoutNotes', label: 'Stand Out Notes', hints: [] },
     ]},
   ];
 
   const WALKTHROUGH_TASKS = [
-    { key: 'floorPlan',       label: 'Floor plan with Cubi Casa (to verify square footage)' },
-    { key: 'photographs',     label: 'Photograph significant findings (especially electrical panel)' },
-    { key: 'utilityBills',    label: 'Get a winter and summer utility bill from property managers' },
-    { key: 'officeSpace',     label: 'Document office space and square footage' },
-    { key: 'freeStorage',     label: 'Identify free storage space' },
-    { key: 'communications',  label: 'Check fax machine and communications infrastructure' },
+    { key: 'electricalPanel',  label: 'Photograph electrical panel' },
+    { key: 'utilityBills',     label: 'Get a winter and summer utility bill from property managers' },
+    { key: 'largeAppliances',  label: 'Photograph each large appliance' },
+    { key: 'roof',             label: 'Take pictures of roof' },
+    { key: 'hvacPictures',     label: 'Photograph heating and cooling system' },
+    { key: 'gasLeaks',         label: 'Spray and check all gas appliances for leaks' },
+    { key: 'floorPlan',        label: 'Verify square footage (PropertyShark / floor plan / Cubi Casa)' },
   ];
 
 
@@ -923,41 +1231,104 @@
           value="${esc(site.name)}" onchange="renameSite(${id})" />
         <div style="display:flex;gap:10px;align-items:center;">
           <span class="score-pill" id="total-pill-${id}">— / 90</span>
+          <select class="intake-input no-print" id="site-status-${id}"
+            style="font-size:0.78rem;padding:4px 8px;width:auto;"
+            onchange="setSiteStatus(${id}, this.value)">
+            <option value="Active">Active</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Recommended">Recommended</option>
+            <option value="Further Review">Further Review</option>
+            <option value="Eliminated">Eliminated</option>
+          </select>
           <button class="btn btn-danger btn-sm no-print" onclick="removeSite(${id})">Remove Site</button>
+        </div>
+      </div>
+
+      <!-- ── PERSISTENT FLAG BAR ── -->
+      <div class="flag-bar" id="flag-bar-${id}">
+        <span class="flag-bar-label">Flags</span>
+        <div class="flag-bar-chips" id="flag-chips-${id}">
+          <span class="flag-bar-empty">None set</span>
+        </div>
+        <button class="flag-bar-toggle no-print" onclick="toggleFlagEditor(${id})">✏️ Edit Flags</button>
+      </div>
+      <div class="flag-editor" id="flag-editor-${id}" style="display:none;">
+        <div class="flag-editor-cols">
+          <div>
+            <div class="flag-editor-head red">🚩 Red Flags</div>
+            ${RED_FLAGS.map(f => `
+              <label class="flag-editor-item">
+                <input type="checkbox" id="rf-cb-${id}-${f.key}" onchange="setRedFlag(${id},'${f.key}',this.checked)" />
+                ${esc(f.label)}
+              </label>`).join('')}
+            <input type="text" class="flag-editor-other" id="rf-other-${id}" placeholder="Other red flag…"
+              oninput="setRedFlagOther(${id},this.value)" />
+          </div>
+          <div>
+            <div class="flag-editor-head green">✅ Green Flags</div>
+            ${GREEN_FLAGS.map(f => `
+              <label class="flag-editor-item">
+                <input type="checkbox" id="gf-cb-${id}-${f.key}" onchange="setGreenFlag(${id},'${f.key}',this.checked)" />
+                ${esc(f.label)}
+              </label>`).join('')}
+            <input type="text" class="flag-editor-other" id="gf-other-${id}" placeholder="Other green flag…"
+              oninput="setGreenFlagOther(${id},this.value)" />
+          </div>
         </div>
       </div>
 
       <div class="inner-tabs-bar">
         <button class="inner-tab-btn active" id="itab-btn-${id}-intake"
-          onclick="showInnerTab(${id},'intake')">Site Intake</button>
+          onclick="showInnerTab(${id},'intake')">
+          <span class="step-badge">1</span>Intake<span class="step-dot" id="dot-${id}-intake"></span>
+        </button>
         <button class="inner-tab-btn" id="itab-btn-${id}-walkthrough"
-          onclick="showInnerTab(${id},'walkthrough')">Building Walkthrough</button>
-        <button class="inner-tab-btn" id="itab-btn-${id}-scoring"
-          onclick="showInnerTab(${id},'scoring')">Scoring</button>
+          onclick="showInnerTab(${id},'walkthrough')">
+          <span class="step-badge">2</span>Walkthrough<span class="step-dot" id="dot-${id}-walkthrough"></span>
+        </button>
         <button class="inner-tab-btn" id="itab-btn-${id}-energyload"
-          onclick="showInnerTab(${id},'energyload')">Energy Load</button>
+          onclick="showInnerTab(${id},'energyload')">
+          <span class="step-badge">3</span>Energy<span class="step-dot" id="dot-${id}-energyload"></span>
+        </button>
         <button class="inner-tab-btn" id="itab-btn-${id}-retrofits"
-          onclick="showInnerTab(${id},'retrofits')">Retrofits &amp; Funding</button>
+          onclick="showInnerTab(${id},'retrofits')">
+          <span class="step-badge">4</span>Retrofits &amp; Funding<span class="step-dot" id="dot-${id}-retrofits"></span>
+        </button>
+        <button class="inner-tab-btn" id="itab-btn-${id}-scoring"
+          onclick="showInnerTab(${id},'scoring')">
+          <span class="step-badge">5</span>Assessment<span class="step-dot" id="dot-${id}-scoring"></span>
+        </button>
       </div>
 
       <div class="inner-content active" id="itab-${id}-intake">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:6px;">
+          <p class="inner-tab-desc" style="margin:0;flex:1;">Basic site information — address, ownership, building type, and locational risks. Fill this in first to establish a record for the site. Much of the property data below can be found for free on <a href="https://www.propertyshark.com" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600;">PropertyShark</a>.</p>
+          <a href="intake-form-template.pdf" download class="dl-template-btn" style="white-space:nowrap;">&#8595; Download PDF Template</a>
+        </div>
         ${buildIntakeContent(id)}
       </div>
 
       <div class="inner-content" id="itab-${id}-walkthrough">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:6px;">
+          <p class="inner-tab-desc" style="margin:0;flex:1;">On-site physical assessment. Document what you observe in each system category during your building visit. Open one section at a time and take notes as you walk through. Observations save automatically. Bring the PDF on-site for offline use. 📸 Take pictures throughout.</p>
+          <a href="building-walkthrough-template.pdf" download class="dl-template-btn" style="white-space:nowrap;">&#8595; Download PDF Template</a>
+        </div>
         ${buildWalkthroughSection(id)}
       </div>
 
-      <div class="inner-content" id="itab-${id}-scoring">
-        ${buildScoringContent(id)}
-      </div>
-
       <div class="inner-content" id="itab-${id}-energyload">
+        <p class="inner-tab-desc">Estimate battery storage and backup power requirements for this site. Enter building specs below and run the sizing model — then add utility data for context. Engage your local CCA (e.g. Peninsula Clean Energy) for metered data; request utility bills from property managers; use reasonable assumptions where data is unavailable. Building name and square footage are pre-filled from Site Intake if available.</p>
         ${buildEnergyLoadContent(id)}
       </div>
 
       <div class="inner-content" id="itab-${id}-retrofits">
+        <p class="inner-tab-desc">Cross-reference with BRIC, CDBG-DR, IRA tax credits, state resilience grants, and CCA rebate programs.</p>
         ${buildRetrofitsContent(id)}
+      </div>
+
+      <div class="inner-content" id="itab-${id}-scoring">
+        <p class="inner-tab-desc">Score the site across four categories once all data has been collected. Scores should reflect your community, walkthrough, energy, and retrofit findings.</p>
+        ${buildScoringContent(id)}
       </div>
 
     `;
@@ -969,65 +1340,68 @@
 
   function buildScoringContent(id) {
     return `
-      <details open>
-        <summary>Physical Resilience<span class="section-score" id="phys-score-${id}">— / 25</span></summary>
+      <details>
+        <summary class="cat-summary">
+          Physical Resilience
+          <div class="cat-bar-track"><div class="score-bar-fill" id="bar-phys-${id}" style="width:0%"></div></div>
+          <span class="section-score" id="phys-score-${id}">— / 25</span>
+        </summary>
         <div class="section-body">
-          <p class="section-desc">Evaluates the extent to which a building can withstand and continue operating during disruption. Early-stage feasibility screen only.</p>
+          <p class="section-desc">Evaluates the extent to which a building can withstand and continue operating during disruption. Early-stage feasibility screen only. Use PropertyShark or the county assessor for ownership, building age, and permits; supplement with site walkthroughs alongside a licensed contractor.</p>
           ${buildScoringTable(id, 'physical', METRICS.physical)}
         </div>
       </details>
 
       <details>
-        <summary>Community Alignment<span class="section-score" id="comm-score-${id}">— / 25</span></summary>
+        <summary class="cat-summary">
+          Community Alignment
+          <div class="cat-bar-track"><div class="score-bar-fill" id="bar-comm-${id}" style="width:0%"></div></div>
+          <span class="section-score" id="comm-score-${id}">— / 25</span>
+        </summary>
         <div class="section-body">
-          <p class="section-desc">Evaluates whether a site is accessible, trusted, and suitable for community use during disruption.</p>
+          <p class="section-desc">Evaluates whether a site is accessible, trusted, and suitable for community use during disruption. Draw on resident interviews, focus groups, and conversations with community leaders and trusted intermediaries.</p>
           ${buildScoringTable(id, 'community', METRICS.community)}
         </div>
       </details>
 
       <details>
-        <summary>Energy Systems<span class="section-score" id="energy-score-${id}">— / 25</span></summary>
+        <summary class="cat-summary">
+          Energy Systems
+          <div class="cat-bar-track"><div class="score-bar-fill" id="bar-energy-${id}" style="width:0%"></div></div>
+          <span class="section-score" id="energy-score-${id}">— / 25</span>
+        </summary>
         <div class="section-body">
-          <p class="section-desc">Evaluates the ability of a site to sustain critical operations during grid disruption.</p>
+          <p class="section-desc">Evaluates the ability of a site to sustain critical operations during grid disruption. Engage your local CCA (e.g. Peninsula Clean Energy) for metered data; document electrical infrastructure during the walkthrough and use reasonable assumptions where data is unavailable.</p>
           ${buildScoringTable(id, 'energy', METRICS.energy)}
         </div>
       </details>
 
       <details>
-        <summary>Financial Viability<span class="section-score" id="fin-score-${id}">— / 15</span></summary>
+        <summary class="cat-summary">
+          Financial Viability
+          <div class="cat-bar-track"><div class="score-bar-fill" id="bar-fin-${id}" style="width:0%"></div></div>
+          <span class="section-score" id="fin-score-${id}">— / 15</span>
+        </summary>
         <div class="section-body">
-          <p class="section-desc">High-level screening of upgrade feasibility. Weighted lower &mdash; raw scores (/20) normalized to 15 points in the composite total.</p>
+          <p class="section-desc">High-level screening of upgrade feasibility — weighted lower, with raw scores (/20) normalized to 15 points in the composite total. Identify key costs from the Physical and Energy assessments, apply a financial modeling tool for upgrade estimates, and cross-reference with available funding programs.</p>
           ${buildScoringTable(id, 'financial', METRICS.financial)}
         </div>
       </details>
 
-      <details>
-        <summary>Red Flags</summary>
-        <div class="section-body">
-          <p class="section-desc">Critical constraints that may limit feasibility regardless of composite score.</p>
-          ${buildRedFlags(id)}
-        </div>
-      </details>
+      <div class="flag-section">
+        <div class="flag-section-head green">✅ Green Flags</div>
+        <p class="section-desc" style="margin:6px 0 10px;">Notable strengths that increase confidence in this site's suitability as a resilience hub.</p>
+        ${buildGreenFlags(id)}
+      </div>
 
-      <details>
-        <summary>Green Flags</summary>
-        <div class="section-body">
-          <p class="section-desc">Notable strengths that increase confidence in this site's suitability as a resilience hub.</p>
-          ${buildGreenFlags(id)}
-        </div>
-      </details>
+      <div class="flag-section">
+        <div class="flag-section-head red">🚩 Red Flags</div>
+        <p class="section-desc" style="margin:6px 0 10px;">Critical constraints that may limit feasibility regardless of composite score.</p>
+        ${buildRedFlags(id)}
+      </div>
 
       <div class="score-summary">
-        <h3>
-          Score Summary
-          <span class="progress-text" id="progress-text-${id}">0 / ${TOTAL_METRICS} metrics scored</span>
-        </h3>
-        <div class="score-bars">
-          ${buildBar(id, 'phys',   'Physical Resilience', 25)}
-          ${buildBar(id, 'comm',   'Community Alignment', 25)}
-          ${buildBar(id, 'energy', 'Energy Systems',      25)}
-          ${buildBar(id, 'fin',    'Financial Viability', 15)}
-        </div>
+        <h3>Score Summary</h3>
         <div class="total-score">
           <div class="total-score-label">Composite Total</div>
           <div>
@@ -1042,10 +1416,6 @@
   function buildIntakeForm(id) {
     return `
       <div class="form-grid">
-
-        <div class="callout" style="margin-bottom:4px;white-space:nowrap;">
-          Much of the property data below can be found for free on <a href="https://www.propertyshark.com" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600;">PropertyShark</a>.
-        </div>
 
         <!-- ── BASIC INFORMATION ── -->
         <div class="form-section-header">Basic Information</div>
@@ -1085,67 +1455,6 @@
             oninput="setIntake(${id},'hoursOfOperation',this.value)" />
         </div>
 
-        <!-- ── LAND SPECIFICATIONS ── -->
-        <div class="form-section-header">Land Specifications</div>
-        <div class="form-group">
-          <label class="field-label">Plot (acres)</label>
-          <input type="text" id="if-${id}-plotAcres" placeholder="e.g. 0.75"
-            oninput="setIntake(${id},'plotAcres',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Zoning</label>
-          <input type="text" id="if-${id}-zoning" placeholder="e.g. R-1, C-2, Mixed Use"
-            oninput="setIntake(${id},'zoning',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Property Class / Land Use</label>
-          <input type="text" id="if-${id}-propertyClass" placeholder=""
-            oninput="setIntake(${id},'propertyClass',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Indoor / Outdoor Space</label>
-          <input type="text" id="if-${id}-indoorOutdoorSpace" placeholder="e.g. 4,000 sq ft indoor, 1,200 sq ft outdoor"
-            oninput="setIntake(${id},'indoorOutdoorSpace',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Purchase Price &amp; Date</label>
-          <input type="text" id="if-${id}-purchasePriceDate" placeholder="e.g. $850,000 — Jan 2018"
-            oninput="setIntake(${id},'purchasePriceDate',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">2025–2026 Market Value</label>
-          <input type="text" id="if-${id}-marketValue2025" placeholder=""
-            oninput="setIntake(${id},'marketValue2025',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">2025–2026 Property Tax</label>
-          <input type="text" id="if-${id}-propertyTax2025" placeholder=""
-            oninput="setIntake(${id},'propertyTax2025',this.value)" />
-        </div>
-
-        <!-- ── LOCATIONAL LAND RISKS ── -->
-        <div class="form-section-header">Locational Land Risks</div>
-        <div class="form-group">
-          <label class="field-label">FEMA Flood Zone</label>
-          <input type="text" id="if-${id}-femaFloodZone" placeholder="e.g. Zone X, Zone AE"
-            oninput="setIntake(${id},'femaFloodZone',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Fire Hazard Zone</label>
-          <input type="text" id="if-${id}-fireHazardZone" placeholder="e.g. High, Very High, SRA"
-            oninput="setIntake(${id},'fireHazardZone',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Faults &amp; Tsunami Inundation Zones</label>
-          <input type="text" id="if-${id}-faultsTsunami" placeholder=""
-            oninput="setIntake(${id},'faultsTsunami',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Landslides &amp; Liquefaction</label>
-          <input type="text" id="if-${id}-landslidesLiquefaction" placeholder=""
-            oninput="setIntake(${id},'landslidesLiquefaction',this.value)" />
-        </div>
-
         <!-- ── BUILDING SPECIFICATIONS ── -->
         <div class="form-section-header">Building Specifications</div>
         <div class="form-group">
@@ -1175,6 +1484,72 @@
           <div class="field-hint">1.0 = Homes &nbsp;&middot;&nbsp; 1.25 = Schools / Publicly Owned Buildings &nbsp;&middot;&nbsp; 1.5 = Hospitals / Fire Stations<br>Check cover sheet of structural drawings if available.</div>
         </div>
 
+        <!-- ── LAND SPECIFICATIONS ── -->
+        <div class="form-section-header">Land Specifications</div>
+        <div class="form-group">
+          <label class="field-label">Plot</label>
+          <input type="text" id="if-${id}-plotAcres" placeholder="e.g. 0.75 acres"
+            oninput="setIntake(${id},'plotAcres',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Zoning</label>
+          <input type="text" id="if-${id}-zoning" placeholder="e.g. R-1, C-2, Mixed Use"
+            oninput="setIntake(${id},'zoning',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Property Class / Land Use</label>
+          <input type="text" id="if-${id}-propertyClass" placeholder=""
+            oninput="setIntake(${id},'propertyClass',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Indoor / Outdoor Space</label>
+          <input type="text" id="if-${id}-indoorOutdoorSpace" placeholder="e.g. 4,000 sq ft indoor, 1,200 sq ft outdoor"
+            oninput="setIntake(${id},'indoorOutdoorSpace',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Purchase Price</label>
+          <input type="text" id="if-${id}-purchasePrice" placeholder="e.g. $850,000"
+            oninput="setIntake(${id},'purchasePrice',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Purchase Date</label>
+          <input type="text" id="if-${id}-purchaseDate" placeholder="e.g. Jan 2018"
+            oninput="setIntake(${id},'purchaseDate',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Market Value</label>
+          <input type="text" id="if-${id}-marketValue" placeholder=""
+            oninput="setIntake(${id},'marketValue',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Property Tax</label>
+          <input type="text" id="if-${id}-propertyTax" placeholder=""
+            oninput="setIntake(${id},'propertyTax',this.value)" />
+        </div>
+
+        <!-- ── LOCATIONAL LAND RISKS ── -->
+        <div class="form-section-header">Locational Land Risks</div>
+        <div class="form-group">
+          <label class="field-label">FEMA Flood Zone</label>
+          <input type="text" id="if-${id}-femaFloodZone" placeholder="e.g. Zone X, Zone AE"
+            oninput="setIntake(${id},'femaFloodZone',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Fire Hazard Zone</label>
+          <input type="text" id="if-${id}-fireHazardZone" placeholder="e.g. High, Very High, SRA"
+            oninput="setIntake(${id},'fireHazardZone',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Faults &amp; Tsunami Inundation Zones</label>
+          <input type="text" id="if-${id}-faultsTsunami" placeholder=""
+            oninput="setIntake(${id},'faultsTsunami',this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="field-label">Landslides &amp; Liquefaction</label>
+          <input type="text" id="if-${id}-landslidesLiquefaction" placeholder=""
+            oninput="setIntake(${id},'landslidesLiquefaction',this.value)" />
+        </div>
+
         <!-- ── ACCESSIBILITY ── -->
         <div class="form-section-header">Accessibility</div>
         <div class="form-group">
@@ -1199,11 +1574,6 @@
           <label class="field-label">Occupancy / Use Pattern</label>
           <textarea id="if-${id}-occupancy" placeholder="Who uses the space, how often, and in what capacity?"
             oninput="setIntake(${id},'occupancy',this.value)"></textarea>
-        </div>
-        <div class="form-group full">
-          <label class="field-label">Data Sources</label>
-          <textarea id="if-${id}-dataSources" placeholder="List sources used to gather information for this site..."
-            oninput="setIntake(${id},'dataSources',this.value)"></textarea>
         </div>
 
         <!-- ── INITIAL SITE FLAGS ── -->
@@ -1242,73 +1612,51 @@
     `;
   }
 
-  function buildScoringTable(id, cat, metrics) {
-    const rows = metrics.map(m => `
-      <tr>
-        <td>
-          <div class="metric-name">${esc(m.name)}</div>
-          ${m.desc ? `<div class="metric-desc">${esc(m.desc)}</div>` : ''}
-        </td>
-        <td style="width:220px;">
-          <div class="score-btn-group" id="sbg-${id}-${cat}-${m.key}">
+  function buildMetricCards(id, cat, metrics) {
+    const catMaxes = { physical: 25, community: 25, energy: 25, financial: 15 };
+    const catMax = catMaxes[cat] || 25;
+    const catLabel = { physical: 'Physical Resilience', community: 'Community Alignment', energy: 'Energy Systems', financial: 'Financial Viability' }[cat] || cat;
+    const cards = metrics.map(m => `
+      <div class="metric-card">
+        <div class="metric-top">
+          <div>
+            <div class="metric-card-name">${esc(m.name)}</div>
+            ${m.desc ? `<div class="metric-card-desc">${esc(m.desc)}</div>` : ''}
+          </div>
+          <div class="score-selector" id="sbg-${id}-${cat}-${m.key}">
             ${[0,1,2,3,4,5].map(i => `
-              <button class="score-btn" title="${i} – ${SCORE_TIPS[i]}"
+              <button class="score-btn sc-${i}" title="${i} – ${SCORE_TIPS[i]}"
                 onclick="setScore(${id},'${cat}','${m.key}',${i},this)">${i}</button>
             `).join('')}
           </div>
-        </td>
-        <td style="width:230px;">
-          <input type="text" class="notes-input" id="note-${id}-${cat}-${m.key}"
-            placeholder="Notes..." oninput="setNote(${id},'${cat}','${m.key}',this.value)" />
-        </td>
-      </tr>
+        </div>
+        <input type="text" class="metric-notes-input" id="note-${id}-${cat}-${m.key}"
+          placeholder="Evidence / notes supporting this score…"
+          oninput="setNote(${id},'${cat}','${m.key}',this.value)" />
+      </div>
     `).join('');
     return `
-      <table class="scoring-table">
-        <thead><tr><th>Metric</th><th>Score (0–5)</th><th>Notes</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div class="scoring-category">
+        ${cards}
+      </div>
     `;
   }
 
+  /* keep old name as alias so existing call sites work */
+  function buildScoringTable(id, cat, metrics) { return buildMetricCards(id, cat, metrics); }
+
   function buildRedFlags(id) {
     return `
-      <div class="red-flags-grid">
-        ${RED_FLAGS.map(f => `
-          <label class="red-flag-item" id="rf-item-${id}-${f.key}">
-            <input type="checkbox" id="rf-cb-${id}-${f.key}" onchange="setRedFlag(${id},'${f.key}',this.checked)" />
-            ${esc(f.label)}
-          </label>
-        `).join('')}
-      </div>
-      <div class="form-group" style="margin-top:14px;max-width:500px;">
-        <label class="field-label">Other Red Flag</label>
-        <input type="text" id="rf-other-${id}" placeholder="Describe any other critical constraint..."
-          oninput="setRedFlagOther(${id},this.value)" />
-      </div>
-      <div class="rf-warning" id="rf-warning-${id}">
-        &#9888;&#65039; One or more red flags identified. This site may require further study or may not be feasible at this stage.
+      <div class="flag-display" id="rf-display-${id}">
+        <span class="flag-display-empty">No red flags set — use the <strong>Edit Flags</strong> button above to add them.</span>
       </div>
     `;
   }
 
   function buildGreenFlags(id) {
     return `
-      <div class="green-flags-grid">
-        ${GREEN_FLAGS.map(f => `
-          <label class="green-flag-item" id="gf-item-${id}-${f.key}">
-            <input type="checkbox" id="gf-cb-${id}-${f.key}" onchange="setGreenFlag(${id},'${f.key}',this.checked)" />
-            ${esc(f.label)}
-          </label>
-        `).join('')}
-      </div>
-      <div class="form-group" style="margin-top:14px;max-width:500px;">
-        <label class="field-label">Other Green Flag</label>
-        <input type="text" id="gf-other-${id}" placeholder="Describe any other notable strength..."
-          oninput="setGreenFlagOther(${id},this.value)" />
-      </div>
-      <div class="gf-banner" id="gf-banner-${id}">
-        &#10003; Green flags noted. These are positive signals worth highlighting in the feasibility summary.
+      <div class="flag-display" id="gf-display-${id}">
+        <span class="flag-display-empty">No green flags set — use the <strong>Edit Flags</strong> button above to add them.</span>
       </div>
     `;
   }
@@ -1327,7 +1675,10 @@
      DATA HANDLERS
   ═══════════════════════════════════════════════════ */
   function setIntake(id, field, value) {
-    const s = getSite(id); if (s) { s.intake[field] = value; save(); }
+    const s = getSite(id); if (!s) return;
+    s.intake[field] = value;
+    updateStepDots(id);
+    save();
   }
   function setIntakeFlag(id, field, value) {
     const s = getSite(id); if (s) { s.intake.flags[field] = value; save(); }
@@ -1363,12 +1714,53 @@
     save();
   }
 
+  function toggleFlagEditor(id) {
+    const el = document.getElementById(`flag-editor-${id}`);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function updateFlagBar(id) {
+    const s = getSite(id); if (!s) return;
+    const chips = document.getElementById(`flag-chips-${id}`);
+    if (!chips) return;
+    const reds = [
+      ...RED_FLAGS.filter(f => s.redFlags[f.key]).map(f => f.label),
+      ...(s.redFlags.other ? [s.redFlags.other] : []),
+    ];
+    const greens = [
+      ...GREEN_FLAGS.filter(f => s.greenFlags?.[f.key]).map(f => f.label),
+      ...(s.greenFlags?.other ? [s.greenFlags.other] : []),
+    ];
+    if (!reds.length && !greens.length) {
+      chips.innerHTML = '<span class="flag-bar-empty">No flags set — check boxes below as you discover them</span>';
+    } else {
+      chips.innerHTML =
+        reds.map(l  => `<span class="flag-chip-red">🚩 ${esc(l)}</span>`).join('') +
+        greens.map(l => `<span class="flag-chip-green">✅ ${esc(l)}</span>`).join('');
+    }
+
+    // Sync read-only display in Assessment tab
+    const rfDisplay = document.getElementById(`rf-display-${id}`);
+    if (rfDisplay) {
+      rfDisplay.innerHTML = reds.length
+        ? reds.map(l => `<span class="flag-chip-red">🚩 ${esc(l)}</span>`).join('')
+        : '<span class="flag-display-empty">No red flags set — use the <strong>Edit Flags</strong> button above to add them.</span>';
+    }
+    const gfDisplay = document.getElementById(`gf-display-${id}`);
+    if (gfDisplay) {
+      gfDisplay.innerHTML = greens.length
+        ? greens.map(l => `<span class="flag-chip-green">✅ ${esc(l)}</span>`).join('')
+        : '<span class="flag-display-empty">No green flags set — use the <strong>Edit Flags</strong> button above to add them.</span>';
+    }
+  }
+
   function setRedFlag(id, key, checked) {
     const s = getSite(id); if (!s) return;
     s.redFlags[key] = checked;
     const item = document.getElementById(`rf-item-${id}-${key}`);
     if (item) item.className = `red-flag-item${checked ? ' checked' : ''}`;
     refreshRfWarning(id);
+    updateFlagBar(id);
     updateComparison();
     save();
   }
@@ -1377,6 +1769,7 @@
     const s = getSite(id); if (!s) return;
     s.redFlags.other = value.trim();
     refreshRfWarning(id);
+    updateFlagBar(id);
     updateComparison();
     save();
   }
@@ -1410,11 +1803,12 @@
     setText(`energy-score-${id}`, energy !== null ? `${energy} / 25` : '— / 25');
     setText(`fin-score-${id}`,    fin    !== null ? `${fin} / 15`    : '— / 15');
 
-    // Bars
+    // Bars (score summary panel)
     setBar('phys',   id, phys,   25);
     setBar('comm',   id, comm,   25);
     setBar('energy', id, energy, 25);
     setBar('fin',    id, fin,    15);
+
 
     // Totals
     setText(`total-score-${id}`, total !== null ? total.toFixed(1) : '—');
@@ -1422,11 +1816,44 @@
 
     // Progress
     const scored = Object.values(s.scores).reduce((a, cat) => a + Object.keys(cat).length, 0);
-    setText(`progress-text-${id}`, `${scored} / ${TOTAL_METRICS} metrics scored`);
-    const progEl = document.getElementById(`stab-prog-${id}`);
-    if (progEl) progEl.textContent = scored > 0 ? ` · ${scored}/${TOTAL_METRICS}` : '';
 
     s._computed = { phys, comm, energy, fin, total };
+    updateStepDots(id);
+  }
+
+  function updateStepDots(id) {
+    const s = getSite(id);
+    if (!s) return;
+
+    // Intake: has name or address filled
+    const intake = s.intake || {};
+    const intakeScore = (intake.name && intake.name !== `Site ${idToLabel(s.slot)}`) || intake.address || intake.owner || intake.sqft
+      ? 'done' : '';
+
+    // Walkthrough: any field filled
+    const wt = s.walkthrough || {};
+    const wtKeys = Object.values(wt).filter(v => typeof v === 'string' && v.trim().length > 0);
+    const wtScore = wtKeys.length >= 3 ? 'done' : wtKeys.length > 0 ? 'started' : '';
+
+    // Assessment (scoring): metrics entered
+    const scored = Object.values(s.scores || {}).reduce((a, cat) => a + Object.keys(cat).length, 0);
+    const assessScore = scored >= TOTAL_METRICS ? 'done' : scored > 0 ? 'started' : '';
+
+    // Energy: any field filled
+    const el = s.energyLoad || {};
+    const elKeys = Object.values(el).filter(v => v !== '' && v !== null && v !== undefined);
+    const elScore = elKeys.length >= 3 ? 'done' : elKeys.length > 0 ? 'started' : '';
+
+    // Retrofits: any items added
+    const rf = s.retrofits || {};
+    const rfItems = (rf.items || []).length;
+    const rfScore = rfItems >= 2 ? 'done' : rfItems > 0 ? 'started' : '';
+
+    const dotMap = { intake: intakeScore, walkthrough: wtScore, scoring: assessScore, energyload: elScore, retrofits: rfScore };
+    Object.entries(dotMap).forEach(([tab, status]) => {
+      const dot = document.getElementById(`dot-${id}-${tab}`);
+      if (dot) dot.className = `step-dot${status ? ' ' + status : ''}`;
+    });
   }
 
   function setBarEl(key, id, score, max) {
@@ -1450,8 +1877,14 @@
     if (btn) btn.classList.add('active');
   }
 
+  function closeOtherWTSections(openedEl) {
+    openedEl.closest('.inner-content')
+      ?.querySelectorAll('details.wt-accordion')
+      .forEach(d => { if (d !== openedEl) d.removeAttribute('open'); });
+  }
+
   function showInnerTab(id, name) {
-    ['intake','walkthrough','scoring','energyload','retrofits'].forEach(t => {
+    ['intake','walkthrough','energyload','retrofits','scoring'].forEach(t => {
       document.getElementById(`itab-${id}-${t}`)?.classList.toggle('active', t === name);
       document.getElementById(`itab-btn-${id}-${t}`)?.classList.toggle('active', t === name);
     });
@@ -1634,6 +2067,7 @@
   }
 
   async function saveNow() {
+    return; /* dev mode — no save */
     if (!currentUser) return;
     try {
       const data = {
@@ -1675,6 +2109,7 @@
   }
 
   async function load() {
+    return; /* dev mode — no load */
     if (!currentUser) return;
     try {
       clearAllSites(); // always start fresh before loading
@@ -1778,6 +2213,7 @@
       if (el) el.value = site.greenFlags.other;
     }
     refreshGfBanner(site.id);
+    updateFlagBar(site.id);
 
     restoreSiteWalkthrough(site);
     restoreSiteEnergyLoad(site);
@@ -1932,17 +2368,10 @@
     const s = getSite(id); if (!s) return;
     if (!s.energyLoad) s.energyLoad = {};
     s.energyLoad[field] = value;
+    updateStepDots(id);
     save();
   }
 
-  function setELCritLoad(id, loadKey, subField, value) {
-    const s = getSite(id); if (!s) return;
-    if (!s.energyLoad) s.energyLoad = {};
-    if (!s.energyLoad.critLoads) s.energyLoad.critLoads = {};
-    if (!s.energyLoad.critLoads[loadKey]) s.energyLoad.critLoads[loadKey] = {};
-    s.energyLoad.critLoads[loadKey][subField] = value;
-    save();
-  }
 
   function buildEnergyLoadContent(id) {
     return `
@@ -1951,7 +2380,7 @@
         <!-- ── SIZING MODEL INPUTS ── -->
         <div class="form-section-header">Sizing Model Inputs <span class="el-tag">Runs Optimization</span></div>
         <div class="callout" style="grid-column:1/-1;margin-bottom:4px;">
-          Enter these 7 fields and click <strong>Run Sizing Model</strong> to calculate recommended PV and battery sizes across 4 scenarios. Building name and square footage are pre-filled from Site Intake if available.
+          Enter these 7 fields and click <strong>Run Sizing Model</strong> to estimate PV and battery sizes across 4 scenarios.
         </div>
         <div class="form-group">
           <label class="field-label">Building Name</label>
@@ -1999,12 +2428,6 @@
         <div id="el-results-${id}" style="display:none;grid-column:1/-1;"></div>
 
         <hr class="el-model-divider" />
-
-        <!-- ── UTILITY & BILLING ── -->
-        <div class="form-section-header">Utility &amp; Billing</div>
-        <div class="callout" style="margin-bottom:4px;grid-column:1/-1;">
-          Key inputs for energy system sizing and optimization. Utility bills and panel info from the Building Walkthrough are the primary sources.
-        </div>
 
         <!-- ── UTILITY & BILLING ── -->
         <div class="form-section-header">Utility &amp; Billing</div>
@@ -2057,138 +2480,6 @@
             <option value="no">No</option>
             <option value="maybe">Needs verification</option>
           </select>
-        </div>
-
-        <!-- ── BUILDING LOAD PROFILE ── -->
-        <div class="form-section-header">Building Load Profile</div>
-        <div class="form-group">
-          <label class="field-label">Estimated Total Connected Load (kW)</label>
-          <input type="text" id="el-${id}-totalConnectedLoad" placeholder=""
-            oninput="setEL(${id},'totalConnectedLoad',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Estimated Peak Demand (kW)</label>
-          <input type="text" id="el-${id}-peakDemand" placeholder=""
-            oninput="setEL(${id},'peakDemand',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Average Daily Consumption (kWh/day)</label>
-          <input type="text" id="el-${id}-avgDailyConsumption" placeholder=""
-            oninput="setEL(${id},'avgDailyConsumption',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Typical Operating Hours per Day</label>
-          <input type="text" id="el-${id}-operatingHours" placeholder="e.g. 10"
-            oninput="setEL(${id},'operatingHours',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">HVAC Type &amp; Age</label>
-          <input type="text" id="el-${id}-hvacTypeAge" placeholder="e.g. Rooftop packaged unit, 2012"
-            oninput="setEL(${id},'hvacTypeAge',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">HVAC Capacity (BTU or tons)</label>
-          <input type="text" id="el-${id}-hvacCapacity" placeholder="e.g. 5 tons, 60,000 BTU"
-            oninput="setEL(${id},'hvacCapacity',this.value)" />
-        </div>
-
-        <!-- ── CRITICAL LOAD INVENTORY ── -->
-        <div class="form-section-header">Critical Load Inventory <span class="el-tag">Optimization Input</span></div>
-        <div class="form-group full">
-          <p class="el-section-note">For each load, estimate its size and mark whether it must be served during a grid outage. These drive the sizing of backup and storage systems.</p>
-          <table class="load-table">
-            <thead>
-              <tr>
-                <th>Load</th>
-                <th>Est. Size (kW)</th>
-                <th class="center">Must serve during outage?</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${CRITICAL_LOADS.map(cl => `
-                <tr>
-                  <td style="font-weight:500;">${esc(cl.label)}</td>
-                  <td>
-                    <input type="text" id="el-${id}-cl-${cl.key}-kw" placeholder="kW"
-                      oninput="setELCritLoad(${id},'${cl.key}','kw',this.value)" />
-                  </td>
-                  <td class="center">
-                    <input type="checkbox" id="el-${id}-cl-${cl.key}-critical"
-                      onchange="setELCritLoad(${id},'${cl.key}','critical',this.checked)" />
-                  </td>
-                  <td>
-                    <input type="text" class="notes-input" id="el-${id}-cl-${cl.key}-notes" placeholder="Notes..."
-                      oninput="setELCritLoad(${id},'${cl.key}','notes',this.value)" />
-                  </td>
-                </tr>
-              `).join('')}
-              <tr>
-                <td>
-                  <input type="text" id="el-${id}-cl-other-label" placeholder="Other load..."
-                    oninput="setELCritLoad(${id},'other','label',this.value)" style="width:130px;" />
-                </td>
-                <td>
-                  <input type="text" id="el-${id}-cl-other-kw" placeholder="kW"
-                    oninput="setELCritLoad(${id},'other','kw',this.value)" />
-                </td>
-                <td class="center">
-                  <input type="checkbox" id="el-${id}-cl-other-critical"
-                    onchange="setELCritLoad(${id},'other','critical',this.checked)" />
-                </td>
-                <td>
-                  <input type="text" class="notes-input" id="el-${id}-cl-other-notes" placeholder="Notes..."
-                    oninput="setELCritLoad(${id},'other','notes',this.value)" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- ── RESILIENCE REQUIREMENTS ── -->
-        <div class="form-section-header">Resilience Requirements <span class="el-tag">Optimization Input</span></div>
-        <div class="form-group">
-          <label class="field-label">Target Outage Duration to Cover (hours)</label>
-          <input type="text" id="el-${id}-targetOutageDuration" placeholder="e.g. 72"
-            oninput="setEL(${id},'targetOutageDuration',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Estimated People Served During Emergency</label>
-          <input type="text" id="el-${id}-peopleServed" placeholder="e.g. 200"
-            oninput="setEL(${id},'peopleServed',this.value)" />
-        </div>
-        <div class="form-group full">
-          <label class="field-label">Priority Load Notes</label>
-          <textarea id="el-${id}-priorityLoadNotes" placeholder="Describe which services are most critical to maintain (e.g. cooling for elderly, medical refrigeration, communications)..."
-            oninput="setEL(${id},'priorityLoadNotes',this.value)"></textarea>
-        </div>
-
-        <!-- ── SOLAR POTENTIAL ── -->
-        <div class="form-section-header">Solar Potential <span class="el-tag">Optimization Input</span></div>
-        <div class="form-group">
-          <label class="field-label">Roof Area Available for Solar (sq ft)</label>
-          <input type="text" id="el-${id}-roofAreaSolar" placeholder=""
-            oninput="setEL(${id},'roofAreaSolar',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Roof Orientation</label>
-          <input type="text" id="el-${id}-roofOrientation" placeholder="e.g. South-facing, flat"
-            oninput="setEL(${id},'roofOrientation',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Roof Tilt (degrees)</label>
-          <input type="text" id="el-${id}-roofTilt" placeholder="e.g. 15°, flat"
-            oninput="setEL(${id},'roofTilt',this.value)" />
-        </div>
-        <div class="form-group">
-          <label class="field-label">Estimated Solar Potential (kW)</label>
-          <input type="text" id="el-${id}-solarPotential" placeholder=""
-            oninput="setEL(${id},'solarPotential',this.value)" />
-        </div>
-        <div class="form-group full">
-          <label class="field-label">Shading &amp; Structural Notes</label>
-          <textarea id="el-${id}-solarNotes" placeholder="Obstructions, structural capacity for panels, other notes..."
-            oninput="setEL(${id},'solarNotes',this.value)"></textarea>
         </div>
 
         <!-- ── EXISTING BACKUP SYSTEMS ── -->
@@ -2253,7 +2544,7 @@
         <div class="rf-section">
           <div class="rf-section-title">Retrofit Needs</div>
           <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:14px;">
-            Log physical improvements needed to make this site resilience-ready. Estimated costs are rough order-of-magnitude figures.
+            Log physical improvements needed to make this site resilience-ready. Draw costs from walkthrough notes and the energy sizing model. Estimated costs are rough order-of-magnitude figures.
           </p>
           <div style="overflow-x:auto;">
             <table class="rf-table">
@@ -2518,29 +2809,12 @@
     const fields = [
       'utilityProvider','tariffRate','annualConsumption','monthlyAvgBill',
       'summerPeakDemand','winterPeakDemand','summerBill','winterBill','netMetering',
-      'totalConnectedLoad','peakDemand','avgDailyConsumption','operatingHours',
-      'hvacTypeAge','hvacCapacity',
-      'targetOutageDuration','peopleServed','priorityLoadNotes',
-      'roofAreaSolar','roofOrientation','roofTilt','solarPotential','solarNotes',
       'generatorSize','generatorFuel','generatorRuntime',
       'batteryPower','batteryCapacity','backupNotes','notes',
     ];
     fields.forEach(f => {
       const el = document.getElementById(`el-${site.id}-${f}`);
       if (el && d[f] != null) el.value = d[f];
-    });
-    // Critical loads
-    const allLoadKeys = [...CRITICAL_LOADS.map(cl => cl.key), 'other'];
-    allLoadKeys.forEach(key => {
-      const cl = d.critLoads?.[key] || {};
-      const kwEl = document.getElementById(`el-${site.id}-cl-${key}-kw`);
-      const cbEl = document.getElementById(`el-${site.id}-cl-${key}-critical`);
-      const notesEl = document.getElementById(`el-${site.id}-cl-${key}-notes`);
-      const labelEl = document.getElementById(`el-${site.id}-cl-${key}-label`);
-      if (kwEl && cl.kw != null)       kwEl.value   = cl.kw;
-      if (cbEl && cl.critical)         cbEl.checked  = true;
-      if (notesEl && cl.notes != null) notesEl.value = cl.notes;
-      if (labelEl && cl.label != null) labelEl.value = cl.label;
     });
   }
 
@@ -2570,7 +2844,7 @@
     const resDiv = document.getElementById(`el-results-${id}`);
 
     if (btn) btn.disabled = true;
-    if (status) status.textContent = 'Running… may take 1–2 minutes if the server is waking up. Hang tight!';
+    if (status) status.textContent = 'Fetching weather data and running model… first run for a new ZIP code may take up to 2 minutes. Hang tight!';
     if (resDiv) resDiv.style.display = 'none';
 
     try {
@@ -2676,6 +2950,7 @@
     if (!s.walkthrough) s.walkthrough = {};
     if (!s.walkthrough[section]) s.walkthrough[section] = {};
     s.walkthrough[section][field] = value;
+    updateStepDots(id);
     save();
   }
 
@@ -2699,18 +2974,19 @@
     return `
       <div class="ce-section">
         <div class="ce-section-title">Engagement Timeline</div>
-        <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:14px;">
-          Log every community touchpoint for the North Fair Oaks resilience hub project — meetings, focus groups, tabling events, site visits, and more.
+        <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:12px;">
+          Log every community touchpoint. Conduct listening sessions <em>before</em> identifying sites — sites should emerge from community priorities. Work through trusted intermediaries (faith leaders, CBO staff, block captains) and note who is in the room and who is not. Use <strong>Discovery</strong> events to listen; use <strong>Reflection</strong> events to bring findings back and validate with the community.
         </p>
         <div style="overflow-x:auto;">
         <table class="ce-timeline">
           <thead>
             <tr>
-              <th style="width:120px;">Date</th>
+              <th style="width:110px;cursor:pointer;user-select:none;" onclick="setCESort('phase')">Phase <span id="ce-sort-phase"></span></th>
+              <th style="width:120px;cursor:pointer;user-select:none;" onclick="setCESort('date')">Date <span id="ce-sort-date"></span></th>
               <th style="width:160px;">Event / Activity</th>
-              <th style="width:130px;">Type</th>
-              <th style="width:110px;">Status</th>
-              <th style="width:60px;text-align:center;"># People</th>
+              <th style="width:120px;cursor:pointer;user-select:none;" onclick="setCESort('type')">Type <span id="ce-sort-type"></span></th>
+              <th style="width:100px;cursor:pointer;user-select:none;" onclick="setCESort('status')">Status <span id="ce-sort-status"></span></th>
+              <th style="width:55px;text-align:center;"># People</th>
               <th style="width:130px;">Attendees / Stakeholders</th>
               <th>Outcome / Notes</th>
               <th style="width:36px;"></th>
@@ -2758,9 +3034,30 @@
 
     const TYPE_OPTIONS   = ['','Focus Group','Interview','Tabling','CCCT','Meeting','Site Visit','Other'];
     const STATUS_OPTIONS = ['Planned','Ongoing','Completed'];
+    const PHASE_OPTIONS  = ['','Discovery','Reflection'];
 
-    tbody.innerHTML = events.map((ev, idx) => `
+    // Update sort indicators
+    ['phase','date','type','status'].forEach(col => {
+      const el = document.getElementById(`ce-sort-${col}`);
+      if (el) el.textContent = ceSort.col === col ? (ceSort.dir === 1 ? ' ▲' : ' ▼') : '';
+    });
+
+    // Sort a shallow copy, keeping original index for event handlers
+    const sorted = events.map((ev, origIdx) => ({ ev, origIdx }))
+      .sort((a, b) => {
+        const va = (a.ev[ceSort.col] || '').toLowerCase();
+        const vb = (b.ev[ceSort.col] || '').toLowerCase();
+        return va < vb ? -ceSort.dir : va > vb ? ceSort.dir : 0;
+      });
+
+    tbody.innerHTML = sorted.map(({ ev, origIdx: idx }) => `
       <tr id="ce-ev-row-${idx}">
+        <td>
+          <select onchange="setEngagementEvent(${idx},'phase',this.value)"
+            style="width:100%;padding:5px 6px;border:1px solid var(--border);border-radius:6px;font-size:0.78rem;">
+            ${PHASE_OPTIONS.map(o => `<option value="${o}"${ev.phase===o?' selected':''}>${o || '— phase —'}</option>`).join('')}
+          </select>
+        </td>
         <td><input type="date" value="${esc(ev.date||'')}"
           onchange="setEngagementEvent(${idx},'date',this.value)" /></td>
         <td><input type="text" value="${esc(ev.title||'')}" placeholder="e.g. Community Meeting"
@@ -2788,12 +3085,12 @@
           oninput="setEngagementEvent(${idx},'notes',this.value)" /></td>
         <td><button class="ce-remove-btn" title="Remove row" onclick="removeEngagementEvent(${idx})">✕</button></td>
       </tr>
-    `).join('') || `<tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:16px;font-size:0.82rem;">No events logged yet. Click + Add Event to begin.</td></tr>`;
+    `).join('') || `<tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:16px;font-size:0.82rem;">No events logged yet. Click + Add Event to begin.</td></tr>`;
   }
 
   function addEngagementEvent() {
     if (!projectEngagement.events) projectEngagement.events = [];
-    projectEngagement.events.push({ date: '', title: '', type: '', status: 'Planned', count: '', attendees: '', notes: '' });
+    projectEngagement.events.push({ phase: '', date: '', title: '', type: '', status: 'Planned', count: '', attendees: '', notes: '' });
     renderEngagementEvents();
     save();
   }
@@ -2807,6 +3104,11 @@
   function setEngagementEvent(idx, field, value) {
     if (!projectEngagement.events[idx]) return;
     projectEngagement.events[idx][field] = value;
+    // Update data-ce-phase attribute live for filtering
+    if (field === 'phase') {
+      const row = document.getElementById('ce-ev-row-' + idx);
+      if (row) row.dataset.cePhase = value.toLowerCase();
+    }
     save();
   }
 
@@ -2834,6 +3136,7 @@
     const item = document.getElementById(`gf-item-${id}-${key}`);
     if (item) item.className = `green-flag-item${checked ? ' checked' : ''}`;
     refreshGfBanner(id);
+    updateFlagBar(id);
     save();
   }
 
@@ -2842,6 +3145,7 @@
     if (!s.greenFlags) s.greenFlags = {};
     s.greenFlags.other = value.trim();
     refreshGfBanner(id);
+    updateFlagBar(id);
     save();
   }
 
@@ -2854,13 +3158,7 @@
 
   function buildWalkthroughSection(id) {
     return `
-      <div class="wt-topbar">
-        <span>Observations save automatically. Bring the PDF on-site for offline use.</span>
-        <a href="building-walkthrough-template.pdf" download>&#8595; Download PDF Template</a>
-        <span class="wt-picture-reminder">📸 Take pictures throughout</span>
-      </div>
-
-      <div class="form-grid" style="margin-bottom:14px;">
+<div class="form-grid" style="margin-bottom:14px;">
         <div class="form-group">
           <label class="field-label">Assessor Name</label>
           <input type="text" id="wt-${id}-header-assessorName" placeholder="Your name"
@@ -2879,12 +3177,13 @@
       </div>
 
       ${WALKTHROUGH_SECTIONS.map(sec => `
-        <details style="margin-bottom:8px;">
+        <details class="wt-accordion" style="margin-bottom:8px;" ontoggle="if(this.open) closeOtherWTSections(this)">
           <summary>${esc(sec.label)}</summary>
           <div class="wt-section-body">
+            ${sec.desc ? `<p class="wt-section-desc">${esc(sec.desc)}</p>` : ''}
             ${sec.fields.map(f => `
               <div class="wt-field">
-                <span class="wt-field-label">${esc(f.label)}</span>
+                <span class="wt-field-label">${esc(f.label)}${f.photo ? ' <span class="wt-photo-badge">📷 photo</span>' : ''}</span>
                 ${f.hints.length ? `
                   <details class="wt-hint-details">
                     <summary>What to look for ▾</summary>
