@@ -2403,7 +2403,8 @@
           <thead>
             <tr>
               <th style="width:120px;">Date</th>
-              <th style="width:180px;">Event / Activity</th>
+              <th style="width:160px;">Event / Activity</th>
+              <th style="width:130px;">Type</th>
               <th style="width:110px;">Status</th>
               <th style="width:130px;">Attendees / Stakeholders</th>
               <th>Outcome / Notes</th>
@@ -2450,6 +2451,7 @@
     const tbody = document.getElementById(`ce-events-${id}`);
     if (!tbody) return;
 
+    const TYPE_OPTIONS  = ['','Focus Group','Interview','Tabling','CCCT','Meeting','Site Visit','Other'];
     const STATUS_OPTIONS = ['Planned','Ongoing','Completed'];
 
     tbody.innerHTML = events.map((ev, idx) => `
@@ -2458,6 +2460,12 @@
           onchange="setEngagementEvent(${id},${idx},'date',this.value)" /></td>
         <td><input type="text" value="${esc(ev.title||'')}" placeholder="e.g. Community Meeting"
           oninput="setEngagementEvent(${id},${idx},'title',this.value)" /></td>
+        <td>
+          <select onchange="setEngagementEvent(${id},${idx},'type',this.value)"
+            style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;">
+            ${TYPE_OPTIONS.map(o => `<option value="${o}"${ev.type===o?' selected':''}>${o || '— select —'}</option>`).join('')}
+          </select>
+        </td>
         <td>
           <select onchange="setEngagementEvent(${id},${idx},'status',this.value)"
             style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;">
@@ -2470,14 +2478,14 @@
           oninput="setEngagementEvent(${id},${idx},'notes',this.value)" /></td>
         <td><button class="ce-remove-btn" title="Remove row" onclick="removeEngagementEvent(${id},${idx})">✕</button></td>
       </tr>
-    `).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:16px;font-size:0.82rem;">No events logged yet. Click + Add Event to begin.</td></tr>`;
+    `).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:16px;font-size:0.82rem;">No events logged yet. Click + Add Event to begin.</td></tr>`;
   }
 
   function addEngagementEvent(id) {
     const s = getSite(id); if (!s) return;
     if (!s.engagement) s.engagement = { events: [], takeaways: '', partnerNotes: '' };
     if (!s.engagement.events) s.engagement.events = [];
-    s.engagement.events.push({ date: '', title: '', status: 'Planned', attendees: '', notes: '' });
+    s.engagement.events.push({ date: '', title: '', type: '', status: 'Planned', attendees: '', notes: '' });
     renderEngagementEvents(id);
     save();
   }
