@@ -607,37 +607,39 @@
       <!-- Process Overview (clickable nav) -->
       <div class="method-card" style="margin-bottom:20px;">
         <div class="card-title">Process Overview</div>
-        <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:16px;line-height:1.6;">This is an iterative, community-centered process — not a linear checklist. Community engagement happens at the start <em>and</em> again after assessment, ensuring findings go back to the people who generated them. Sites are assessed in parallel; the process can repeat as candidates emerge or are eliminated. Click any phase to navigate.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div onclick="showTab('engagement');refreshEngagementTab();" style="cursor:pointer;padding:14px 16px;border:1px solid var(--border);border-radius:8px;background:#f8fafc;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(30,64,175,0.12)'" onmouseout="this.style.boxShadow=''">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-              <div class="process-circle">1</div>
-              <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Community Discovery</div>
-            </div>
-            <p style="font-size:0.79rem;color:var(--text-light);margin:0;line-height:1.5;">Listen before assessing. Document community priorities, stakeholder relationships, and what resilience means to residents. Sites emerge from this listening — not the other way around.</p>
+        <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:20px;line-height:1.6;">Click any phase to navigate. Community engagement bookends the process — sites emerge from listening, and findings go back to the community before any recommendation is made.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+          <!-- Community Discovery -->
+          <div onclick="showTab('engagement');refreshEngagementTab();" style="cursor:pointer;border-radius:12px;border:1.5px solid #bbf7d0;background:#f0fdf4;padding:22px 18px;text-align:center;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(21,128,61,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="font-size:2rem;margin-bottom:10px;">🌱</div>
+            <div style="font-weight:700;font-size:0.9rem;color:#15803d;margin-bottom:8px;">Community Discovery</div>
+            <p style="font-size:0.78rem;color:#374151;margin:0;line-height:1.5;">Listen before assessing. Document community priorities, stakeholder relationships, and what resilience means to residents. Sites emerge from this listening.</p>
           </div>
-          <div onclick="showTab('compare');" style="cursor:pointer;padding:14px 16px;border:1px solid var(--border);border-radius:8px;background:#f8fafc;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(30,64,175,0.12)'" onmouseout="this.style.boxShadow=''">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-              <div class="process-circle">2</div>
-              <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Site Assessment</div>
-            </div>
-            <p style="font-size:0.79rem;color:var(--text-light);margin:0;line-height:1.5;">Physical walkthroughs, energy modeling, and scoring across physical, community, energy, and financial dimensions. Assess each candidate site systematically and in parallel.</p>
+
+          <!-- Site Assessment -->
+          <div onclick="showTab('compare');" style="cursor:pointer;border-radius:12px;border:1.5px solid #bfdbfe;background:#eff6ff;padding:22px 18px;text-align:center;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(29,78,216,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="font-size:2rem;margin-bottom:10px;">🔍</div>
+            <div style="font-weight:700;font-size:0.9rem;color:#1d4ed8;margin-bottom:8px;">Site Assessment</div>
+            <p style="font-size:0.78rem;color:#374151;margin:0;line-height:1.5;">Walkthroughs, energy modeling, and scoring across physical, community, energy, and financial dimensions. Assess each candidate in parallel.</p>
           </div>
-          <div onclick="showTab('engagement');refreshEngagementTab();" style="cursor:pointer;padding:14px 16px;border:1px solid var(--border);border-radius:8px;background:#f8fafc;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(30,64,175,0.12)'" onmouseout="this.style.boxShadow=''">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-              <div class="process-circle">3</div>
-              <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Community Reflection</div>
-            </div>
-            <p style="font-size:0.79rem;color:var(--text-light);margin:0;line-height:1.5;">Bring findings back to the community. Do the top-scoring sites actually serve expressed needs? This step grounds technical scores in lived experience and can reopen the candidate pool.</p>
+
+          <!-- Community Reflection -->
+          <div onclick="showTab('engagement');refreshEngagementTab();" style="cursor:pointer;border-radius:12px;border:1.5px solid #bbf7d0;background:#f0fdf4;padding:22px 18px;text-align:center;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(21,128,61,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="font-size:2rem;margin-bottom:10px;">🤝</div>
+            <div style="font-weight:700;font-size:0.9rem;color:#15803d;margin-bottom:8px;">Community Reflection</div>
+            <p style="font-size:0.78rem;color:#374151;margin:0;line-height:1.5;">Bring findings back. Do the top-scoring sites serve expressed needs? This grounds technical scores in lived experience and can reopen the candidate pool.</p>
           </div>
-          <div onclick="showTab('conclusions');refreshConclusionsRankings();" style="cursor:pointer;padding:14px 16px;border:1px solid var(--border);border-radius:8px;background:#f8fafc;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(30,64,175,0.12)'" onmouseout="this.style.boxShadow=''">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-              <div class="process-circle">4</div>
-              <div style="font-weight:700;font-size:0.88rem;color:var(--primary);">Conclusions</div>
-            </div>
-            <p style="font-size:0.79rem;color:var(--text-light);margin:0;line-height:1.5;">Synthesize scores, flags, and community input into a site recommendation. Document rationale, trade-offs, and next steps for the selected site.</p>
+
+          <!-- Conclusions -->
+          <div onclick="showTab('conclusions');refreshConclusionsRankings();" style="cursor:pointer;border-radius:12px;border:1.5px solid #fde68a;background:#fffbeb;padding:22px 18px;text-align:center;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(146,64,14,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="font-size:2rem;margin-bottom:10px;">📍</div>
+            <div style="font-weight:700;font-size:0.9rem;color:#92400e;margin-bottom:8px;">Conclusions</div>
+            <p style="font-size:0.78rem;color:#374151;margin:0;line-height:1.5;">Synthesize scores, flags, and community input into a site recommendation. Document rationale, trade-offs, and next steps.</p>
           </div>
+
         </div>
+        <p style="font-size:0.74rem;color:var(--text-light);margin-top:14px;margin-bottom:0;text-align:center;letter-spacing:0.01em;">↺ &nbsp;Community engagement recurs throughout — the process is iterative, not linear</p>
       </div>
 
 
