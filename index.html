@@ -2113,7 +2113,6 @@
   }
 
   async function saveNow() {
-    return; /* dev mode — no save */
     if (!currentUser) return;
     try {
       const data = {
@@ -2155,7 +2154,6 @@
   }
 
   async function load() {
-    return; /* dev mode — no load */
     if (!currentUser) return;
     try {
       clearAllSites(); // always start fresh before loading
