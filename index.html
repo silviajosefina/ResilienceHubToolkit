@@ -160,6 +160,12 @@
     .gf-banner { margin-top: 12px; padding: 10px 14px; background: #dcfce7; border: 1px solid #4ade80; border-radius: 6px; font-size: 0.875rem; color: #15803d; display: none; }
     .gf-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #16a34a; margin-right: 5px; vertical-align: middle; }
 
+    /* ── Community Engagement top-level tab ── */
+    .ce-pill { padding: 6px 16px; border: 1.5px solid var(--border); border-radius: 20px; background: white; font-size: 0.82rem; font-weight: 500; color: var(--text-light); cursor: pointer; transition: all 0.15s; }
+    .ce-pill:hover { border-color: var(--primary); color: var(--primary); }
+    .ce-pill.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
+    .ce-site-header { font-size: 1rem; font-weight: 600; color: var(--primary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+
     /* ── Community Engagement tab ── */
     .ce-section { margin-bottom: 28px; }
     .ce-section-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--primary); padding-bottom: 7px; border-bottom: 2px solid var(--border); margin-bottom: 14px; }
@@ -424,6 +430,7 @@
     <button class="tab-btn active" id="tab-btn-home" onclick="showTab('home')">Overview</button>
     <button class="tab-btn" id="tab-btn-methodology" onclick="showTab('methodology')">Siting Methodology</button>
     <button class="tab-btn" id="tab-btn-compare" onclick="showTab('compare')">Sites</button>
+    <button class="tab-btn" id="tab-btn-engagement" onclick="showTab('engagement');refreshEngagementTab();">Community Engagement</button>
   </div>
 
   <!-- ── OVERVIEW TAB ── -->
@@ -534,6 +541,17 @@
     </div>
 
     <!-- Site sub-tabs injected here by JS -->
+  </div>
+</div>
+
+<!-- ── COMMUNITY ENGAGEMENT TAB ── -->
+<div id="tab-engagement" class="tab-content">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+    <h2 style="font-size:1.05rem;font-weight:600;color:var(--primary);margin:0;">Community Engagement</h2>
+    <div id="ce-site-pills" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+  </div>
+  <div id="ce-active-content">
+    <div class="empty-state">No sites added yet. Go to <strong>Sites</strong> and click <strong>+ Add Site</strong> to begin tracking engagement.</div>
   </div>
 </div>
 
@@ -784,6 +802,53 @@
     if (btn) btn.style.display = sites.length > 0 ? '' : 'none';
   }
 
+  let ceActiveSiteId = null;
+
+  function refreshEngagementTab() {
+    const pillBar = document.getElementById('ce-site-pills');
+    if (!pillBar) return;
+
+    if (sites.length === 0) {
+      pillBar.innerHTML = '';
+      const content = document.getElementById('ce-active-content');
+      if (content) content.innerHTML = `<div class="empty-state">No sites added yet. Go to <strong>Sites</strong> and click <strong>+ Add Site</strong> to begin tracking engagement.</div>`;
+      ceActiveSiteId = null;
+      return;
+    }
+
+    pillBar.innerHTML = sites.map(s => `
+      <button class="ce-pill${ceActiveSiteId === s.id ? ' active' : ''}"
+        onclick="selectCESite(${s.id})">${esc(s.name)}</button>
+    `).join('');
+
+    // Auto-select: keep current or fall back to first site
+    const stillExists = ceActiveSiteId && sites.find(s => s.id === ceActiveSiteId);
+    if (!stillExists) selectCESite(sites[0].id);
+  }
+
+  function selectCESite(id) {
+    ceActiveSiteId = id;
+    const site = getSite(id);
+    if (!site) return;
+
+    // Update pill active state
+    document.querySelectorAll('.ce-pill').forEach(p => p.classList.remove('active'));
+    const activePill = [...document.querySelectorAll('.ce-pill')]
+      .find(p => p.textContent.trim() === site.name);
+    if (activePill) activePill.classList.add('active');
+
+    // Render CE content for this site
+    const content = document.getElementById('ce-active-content');
+    if (!content) return;
+    content.innerHTML = `
+      <div class="ce-site-header">${esc(site.name)}</div>
+      ${buildEngagementContent(id)}
+    `;
+
+    // Restore saved engagement data into the freshly-rendered DOM
+    restoreSiteEngagement(site);
+  }
+
   function nextSlot() {
     const used = new Set(sites.map(s => s.slot));
     let n = 1;
@@ -810,6 +875,7 @@
     sites.push(site);
     mountSiteTab(site);
     refreshSummaryTab();
+    refreshEngagementTab();
     showTab('compare');
     showSiteSubTab(`site-${id}`);
     updateComparison();
@@ -843,6 +909,7 @@
     document.getElementById(`stab-btn-${id}`)?.remove();
     document.getElementById(`stab-site-${id}`)?.remove();
     refreshSummaryTab();
+    refreshEngagementTab();
     showSiteSubTab('summary');
     updateComparison();
     save();
@@ -894,8 +961,6 @@
           onclick="showInnerTab(${id},'scoring')">Scoring</button>
         <button class="inner-tab-btn" id="itab-btn-${id}-energyload"
           onclick="showInnerTab(${id},'energyload')">Energy Load</button>
-        <button class="inner-tab-btn" id="itab-btn-${id}-engagement"
-          onclick="showInnerTab(${id},'engagement')">Community Engagement</button>
       </div>
 
       <div class="inner-content active" id="itab-${id}-intake">
@@ -914,9 +979,6 @@
         ${buildEnergyLoadContent(id)}
       </div>
 
-      <div class="inner-content" id="itab-${id}-engagement">
-        ${buildEngagementContent(id)}
-      </div>
     `;
   }
 
@@ -1408,7 +1470,7 @@
   }
 
   function showInnerTab(id, name) {
-    ['intake','walkthrough','scoring','energyload','engagement'].forEach(t => {
+    ['intake','walkthrough','scoring','energyload'].forEach(t => {
       document.getElementById(`itab-${id}-${t}`)?.classList.toggle('active', t === name);
       document.getElementById(`itab-btn-${id}-${t}`)?.classList.toggle('active', t === name);
     });
@@ -1637,6 +1699,7 @@
       const data = doc.data();
       siteCounter = data.siteCounter || 0;
       (data.sites || []).forEach(restoreSite);
+      refreshEngagementTab();
     } catch(e) {
       console.warn('Firestore load failed', e);
     }
@@ -1732,7 +1795,6 @@
 
     restoreSiteWalkthrough(site);
     restoreSiteEnergyLoad(site);
-    restoreSiteEngagement(site);
     recalculate(site.id);
     updateComparison();
     refreshSummaryTab();
