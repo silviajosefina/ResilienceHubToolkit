@@ -423,7 +423,7 @@
   <div class="tabs-bar" id="tabsBar">
     <button class="tab-btn active" id="tab-btn-home" onclick="showTab('home')">Overview</button>
     <button class="tab-btn" id="tab-btn-methodology" onclick="showTab('methodology')">Siting Methodology</button>
-    <button class="tab-btn" id="tab-btn-compare" onclick="showTab('compare')">Site Comparison</button>
+    <button class="tab-btn" id="tab-btn-compare" onclick="showTab('compare')">Sites</button>
   </div>
 
   <!-- ── OVERVIEW TAB ── -->
@@ -434,7 +434,7 @@
           This toolkit provides a standardized, auditable framework for comparing candidate resilience hub sites across physical resilience, energy systems, community alignment, and financial viability. It is designed to support decision-making by community partners, planners, and technical teams evaluating which buildings are best suited to serve as resilience hubs during climate emergencies, power outages, and other disruptions.
         </p>
         <p style="font-size:0.875rem;color:var(--text-light);margin-top:10px;">
-          Use the <strong>Site Comparison</strong> tab to score and compare candidate sites. Use the <strong>Siting Methodology</strong> tab for guidance on data collection approaches by category.
+          Use the <strong>Sites</strong> tab to score and compare candidate sites. Use the <strong>Siting Methodology</strong> tab for guidance on data collection approaches by category.
         </p>
       </div>
       <h2>How to Use This Toolkit</h2>
@@ -453,7 +453,7 @@
         </li>
         <li>
           <div class="step-num">4</div>
-          <div class="step-body"><strong>Compare Results</strong><span>Review the Site Comparison table to evaluate sites across all four categories. Note red flags that may override composite scores.</span></div>
+          <div class="step-body"><strong>Compare Results</strong><span>Review the Sites table to evaluate sites across all four categories. Note red flags that may override composite scores.</span></div>
         </li>
         <li>
           <div class="step-num">5</div>
@@ -517,7 +517,7 @@
 
     <!-- Sub-tab bar -->
     <div class="site-subtabs-bar" id="siteSubtabsBar">
-      <button class="sub-tab-btn active" id="stab-btn-summary" onclick="showSiteSubTab('summary')" style="display:none;">Summary</button>
+      <button class="sub-tab-btn active" id="stab-btn-summary" onclick="showSiteSubTab('summary')" style="display:none;">Scores</button>
       <!-- site sub-tab buttons injected here -->
       <button class="btn btn-green btn-sm no-print" style="margin-left:8px;" onclick="addSite()">+ Add Site</button>
     </div>
