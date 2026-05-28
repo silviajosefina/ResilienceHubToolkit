@@ -217,6 +217,8 @@
     .ce-event-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .ce-event-card .form-group { margin-bottom: 0; }
     .ce-event-card .full-width { grid-column: 1 / -1; }
+    .ce-auto-ta { width: 100%; resize: none; overflow: hidden; min-height: 32px; box-sizing: border-box; padding: 5px 7px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.82rem; font-family: inherit; line-height: 1.45; background: var(--card); color: var(--text); }
+    .ce-auto-ta:focus { outline: none; border-color: var(--accent); }
     .ce-add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: #f0fdf4; border: 1px dashed #4ade80; border-radius: 6px; font-size: 0.82rem; font-weight: 600; color: #16a34a; cursor: pointer; transition: background 0.15s; }
     .ce-add-btn:hover { background: #dcfce7; }
     .ce-remove-btn { float: right; border: none; background: none; color: #9ca3af; font-size: 0.8rem; cursor: pointer; padding: 0; }
@@ -3104,8 +3106,9 @@
         </td>
         <td><input type="date" value="${esc(ev.date||'')}"
           onchange="setEngagementEvent(${idx},'date',this.value)" /></td>
-        <td><input type="text" value="${esc(ev.title||'')}" placeholder="e.g. Community Meeting"
-          oninput="setEngagementEvent(${idx},'title',this.value)" /></td>
+        <td><textarea class="ce-auto-ta" placeholder="e.g. Community Meeting"
+          oninput="setEngagementEvent(${idx},'title',this.value);autoResizeCeTA(this)"
+          onfocus="autoResizeCeTA(this)">${esc(ev.title||'')}</textarea></td>
         <td>
           <select onchange="setEngagementEvent(${idx},'type',this.value)"
             style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;">
@@ -3123,13 +3126,25 @@
             placeholder="—" style="width:52px;text-align:center;padding:5px 4px;"
             oninput="setEngagementEvent(${idx},'count',this.value)" />
         </td>
-        <td><input type="text" value="${esc(ev.attendees||'')}" placeholder="Names / orgs"
-          oninput="setEngagementEvent(${idx},'attendees',this.value)" /></td>
-        <td><input type="text" value="${esc(ev.notes||'')}" placeholder="Outcome / next steps"
-          oninput="setEngagementEvent(${idx},'notes',this.value)" /></td>
+        <td><textarea class="ce-auto-ta" placeholder="Names / orgs"
+          oninput="setEngagementEvent(${idx},'attendees',this.value);autoResizeCeTA(this)"
+          onfocus="autoResizeCeTA(this)">${esc(ev.attendees||'')}</textarea></td>
+        <td><textarea class="ce-auto-ta" placeholder="Outcome / next steps"
+          oninput="setEngagementEvent(${idx},'notes',this.value);autoResizeCeTA(this)"
+          onfocus="autoResizeCeTA(this)">${esc(ev.notes||'')}</textarea></td>
         <td><button class="ce-remove-btn" title="Remove row" onclick="removeEngagementEvent(${idx})">✕</button></td>
       </tr>
     `).join('') || `<tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:16px;font-size:0.82rem;">No events logged yet. Click + Add Event to begin.</td></tr>`;
+
+    // Auto-size any pre-filled textareas
+    setTimeout(() => {
+      tbody.querySelectorAll('.ce-auto-ta').forEach(ta => autoResizeCeTA(ta));
+    }, 0);
+  }
+
+  function autoResizeCeTA(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
   }
 
   function addEngagementEvent() {
