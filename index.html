@@ -2406,6 +2406,7 @@
               <th style="width:160px;">Event / Activity</th>
               <th style="width:130px;">Type</th>
               <th style="width:110px;">Status</th>
+              <th style="width:60px;text-align:center;"># People</th>
               <th style="width:130px;">Attendees / Stakeholders</th>
               <th>Outcome / Notes</th>
               <th style="width:36px;"></th>
@@ -2472,20 +2473,25 @@
             ${STATUS_OPTIONS.map(o => `<option value="${o}"${ev.status===o?' selected':''}>${o}</option>`).join('')}
           </select>
         </td>
+        <td style="text-align:center;">
+          <input type="number" min="0" value="${ev.count != null ? ev.count : ''}"
+            placeholder="—" style="width:52px;text-align:center;padding:5px 4px;"
+            oninput="setEngagementEvent(${id},${idx},'count',this.value)" />
+        </td>
         <td><input type="text" value="${esc(ev.attendees||'')}" placeholder="Names / orgs"
           oninput="setEngagementEvent(${id},${idx},'attendees',this.value)" /></td>
         <td><input type="text" value="${esc(ev.notes||'')}" placeholder="Outcome / next steps"
           oninput="setEngagementEvent(${id},${idx},'notes',this.value)" /></td>
         <td><button class="ce-remove-btn" title="Remove row" onclick="removeEngagementEvent(${id},${idx})">✕</button></td>
       </tr>
-    `).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:16px;font-size:0.82rem;">No events logged yet. Click + Add Event to begin.</td></tr>`;
+    `).join('') || `<tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:16px;font-size:0.82rem;">No events logged yet. Click + Add Event to begin.</td></tr>`;
   }
 
   function addEngagementEvent(id) {
     const s = getSite(id); if (!s) return;
     if (!s.engagement) s.engagement = { events: [], takeaways: '', partnerNotes: '' };
     if (!s.engagement.events) s.engagement.events = [];
-    s.engagement.events.push({ date: '', title: '', type: '', status: 'Planned', attendees: '', notes: '' });
+    s.engagement.events.push({ date: '', title: '', type: '', status: 'Planned', count: '', attendees: '', notes: '' });
     renderEngagementEvents(id);
     save();
   }
