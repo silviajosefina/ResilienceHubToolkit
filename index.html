@@ -2023,7 +2023,7 @@
   /* ═══════════════════════════════════════════════════
      FIREBASE INIT + AUTH
   ═══════════════════════════════════════════════════ */
-  const ALLOWED_EMAILS = ['sjl.managed@gmail.com', 'nfo.resiliencehub@gmail.com'];
+  const ALLOWED_EMAILS = []; // open to all Gmail accounts — checked below
 
   const firebaseConfig = {
     apiKey: "AIzaSyCY4q_JFp8oB97hHgH_dKHHDWgZgDOlsJc",
@@ -2058,7 +2058,7 @@
       return;
     }
     const email = (user.email || '').toLowerCase();
-    if (!ALLOWED_EMAILS.map(e => e.toLowerCase()).includes(email)) {
+    if (!email.endsWith('@gmail.com')) {
       currentUser = null;
       document.getElementById('deniedEmail').textContent = user.email;
       updateHeaderUser(null);
