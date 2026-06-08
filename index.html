@@ -2058,7 +2058,7 @@
       return;
     }
     const email = (user.email || '').toLowerCase();
-    if (!email.endsWith('@gmail.com')) {
+    if (!email) {
       currentUser = null;
       document.getElementById('deniedEmail').textContent = user.email;
       updateHeaderUser(null);
